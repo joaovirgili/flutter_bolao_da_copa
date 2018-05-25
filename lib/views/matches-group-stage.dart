@@ -17,10 +17,10 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
   _getMatches() async {
     final String urlMatches = "http://www.srgoool.com.br/call?ajax=get_classificacao2&id_fase=1796";
     final response = await http.get(urlMatches);
-    print("Loading matches...");
+    print("Loading group stage...");
 
     if (response.statusCode == 200) {
-      print("Ok");
+      print("Group stage loaded.");
       final map = json.decode(response.body);
       setState(() {
         matches = map['jogos'];

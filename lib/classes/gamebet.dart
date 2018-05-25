@@ -29,10 +29,10 @@ class GameBet {
 
   GameBetCard getGameBetaCard(BuildContext context) {
     return new GameBetCard(
-      homeTeam: this.homeTeamName,
-      awayTeam: this.awayTeamName,
-      homeTeamImage: "assets/" + homeTeamId + ".png",
-      awayTeamImage: "assets/" + awayTeamId + ".png",
+      homeTeam: this.homeTeamName != null ? this.homeTeamName : "TBD",
+      awayTeam: this.awayTeamName != null ? this.awayTeamName : "TBD",
+      homeTeamImage: homeTeamId != null ? "assets/$homeTeamId.png" : "assets/666.png",
+      awayTeamImage: awayTeamId != null ? "assets/$awayTeamId.png" : "assets/666.png",
       date: this.date,
       stage: this.stage,
     );

@@ -43,8 +43,8 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
           controller: _tabController,
           children: <Widget>[
             new GroupStageMatches(),
-            new QuarterFinals(),
             new RoundOfSixteen(),
+            new QuarterFinals(),
             new SemiAndFinal(),
           ],
         ),
@@ -58,10 +58,10 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
               text: "Grupos",
             ),
             new Tab(
-              text: "Quartas de Final",
+              text: "Oitavas",
             ),
             new Tab(
-              text: "Oitavas de Final",
+              text: "Quartas",
             ),
             new Tab(
               text: "Semi e Final",
