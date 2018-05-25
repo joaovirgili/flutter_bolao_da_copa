@@ -4,12 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_bolao/classes/gamebet.dart';
 
 
-class Jogos extends StatefulWidget {
+class GroupStageMatches extends StatefulWidget {
   @override
-  _JogosState createState() => new _JogosState();
+  _GroupStageMatchesState createState() => new _GroupStageMatchesState();
+
 }
 
-class _JogosState extends State<Jogos> {
+class _GroupStageMatchesState extends State<GroupStageMatches> {
   var matches;
   var _isLoading = true;
 
@@ -23,7 +24,6 @@ class _JogosState extends State<Jogos> {
       final map = json.decode(response.body);
       setState(() {
         matches = map['jogos'];
-        print(matches[0]["m_clube"]);
         _isLoading = false;
       });
     }
@@ -47,9 +47,10 @@ class _JogosState extends State<Jogos> {
                 return new GameBet(
                   homeTeamName: matches[index]["m_clube"],
                   awayTeamName: matches[index]["v_clube"],
-                  homeTeamFlag: "http://www.countryflags.io/BR/shiny/64.png",
-                  awayTeamFlag: "http://www.countryflags.io/EG/shiny/64.png",
+                  homeTeamId: matches[index]["id_clubem"],
+                  awayTeamId: matches[index]["id_clubev"],
                   date: matches[index]["data"] + " - " + matches[index]["hora"],
+                  stage: matches[index]["nome_grupo"]
                 ).getGameBetaCard(context);
               },
             ),
