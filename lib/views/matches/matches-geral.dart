@@ -6,8 +6,6 @@ import 'matches-semi.dart';
 import 'matches-final.dart';
 import '../../utils/singleton.dart';
 
-enum WhyFarther { harder, smarter, selfStarter, tradingCharter }
-
 class Matches extends StatefulWidget {
   Matches({Key key, this.title}) : super(key: key);
 

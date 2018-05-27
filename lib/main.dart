@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'views/matches/matches-geral.dart';
-import 'views/user-info.dart';
+import 'views/user-profile.dart';
 import 'views/placar-geral.dart';
 
 void main() => runApp(new Bolao());
@@ -17,6 +17,7 @@ class Bolao extends StatelessWidget {
       theme: new ThemeData(),
       routes: <String, WidgetBuilder>{
         "/Matches": (BuildContext context) => new Matches(title: "Jogos"),
+        "/UserProfile": (BuildContext context) => new UserProfile(title: "Minha conta"),
       },
     );
   }
@@ -32,21 +33,6 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin {
-  TabController _tabController;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _tabController = new TabController(vsync: this, length: 2, initialIndex: 0);
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _tabController.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,31 +40,7 @@ class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin {
       appBar: new AppBar(
         title: new Text("Bolão do É Nóis!"),
       ),
-      body: new Center(
-        child: new TabBarView(
-          controller: _tabController,
-          children: <Widget>[
-            new UserInfo(),
-            new PlacarGeral(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: new Material(
-        color: Colors.blueAccent,
-        child: new TabBar(
-          controller: _tabController,
-          tabs: <Widget>[
-            new Tab(
-              icon: new Icon(Icons.verified_user),
-              text: "Minha conta",
-            ),
-            new Tab(
-              icon: new Icon(Icons.verified_user),
-              text: "Placar geral",
-            ),
-          ],
-        ),
-      ),
+      body: new PlacarGeral(),
       drawer: new Drawer(
         child: new Column(
           children: <Widget>[
@@ -124,7 +86,7 @@ class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin {
                   new Divider(),
                   new ListTile(
                     title: new Text("Minha conta"),
-                    onTap: () => null,
+                    onTap: () => Navigator.popAndPushNamed(context, "/UserProfile"),
                     trailing: new Image.asset("assets/icons/icons-soccer-player.png", width: 20.0, height: 20.0,),
                   )
                 ],
