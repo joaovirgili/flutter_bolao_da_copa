@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bolao/classes/gamebet.dart';
-import '../utils/singleton.dart';
-import 'dart:async';
+import '../../utils/singleton.dart';
 
 class RoundOfSixteen extends StatefulWidget {
   @override
@@ -9,14 +8,16 @@ class RoundOfSixteen extends StatefulWidget {
 }
 
 class _RoundOfSixteenState extends State<RoundOfSixteen> {
-  var matches;
+  var matches = new Map();
   var _isLoading = true;
+  var sing;
 
-  Future _getMatches() async {
-    this.matches = await new Singleton().getEliminationJson();
-    print(matches.length);
+  _getJson() async {
+    print("getmatches round of sixteen");
+    var jsonLoaded = await sing.getEliminationJson();
     setState(() {
-      this._isLoading = false;
+      this.matches = jsonLoaded;
+      this._isLoading= false;
     });
   }
 
@@ -24,7 +25,8 @@ class _RoundOfSixteenState extends State<RoundOfSixteen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getMatches();
+    sing = new Singleton();
+    _getJson();
   }
 
   @override
@@ -42,19 +44,21 @@ class _RoundOfSixteenState extends State<RoundOfSixteen> {
       child: _isLoading
           ? new Center(child: new CircularProgressIndicator())
           : new ListView.builder(
-              itemCount: matches[0].length,
+              itemCount: matches["fases"][0]["jogos"].length,
               itemBuilder: (BuildContext context, int index) {
                 return new GameBet(
-                  homeTeamName: matches[0][index]["m_clube"],
-                  awayTeamName: matches[0][index]["v_clube"],
-                  homeTeamId: matches[0][index]["escudom"],
-                  awayTeamId: matches[0][index]["escudov"],
-                  date: matches[0][index]["datahora"],
-                  stage: "Oitavas de Final"
+                  homeTeamName: matches["fases"][0]["jogos"][index]["m_clube"],
+                  awayTeamName: matches["fases"][0]["jogos"][index]["v_clube"],
+                  homeTeamId: matches["fases"][0]["jogos"][index]["escudom"],
+                  awayTeamId: matches["fases"][0]["jogos"][index]["escudov"],
+                  date: matches["fases"][0]["jogos"][index]["datahora"],
+                  stage: "Oitavas de final"
                 ).getGameBetaCard(context);
               },
-            ),
+            )
     );
   }
-
 }
+
+
+

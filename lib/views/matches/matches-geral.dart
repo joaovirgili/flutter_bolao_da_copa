@@ -4,7 +4,7 @@ import 'matches-quarterFinals.dart';
 import 'matches-round-of-sixteen.dart';
 import 'matches-semi.dart';
 import 'matches-final.dart';
-import '../utils/singleton.dart';
+import '../../utils/singleton.dart';
 
 enum WhyFarther { harder, smarter, selfStarter, tradingCharter }
 

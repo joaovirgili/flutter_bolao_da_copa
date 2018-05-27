@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:flutter_bolao/classes/gamebet.dart';
-import '../utils/singleton.dart';
+import '../../utils/singleton.dart';
+
 
 class GroupStageMatches extends StatefulWidget {
   @override
@@ -39,17 +40,17 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
       child: _isLoading
           ? new Center(child: new CircularProgressIndicator())
           : new ListView.builder(
-              itemCount: matches.length,
+              itemCount: matches["jogos"].length,
               itemBuilder: (BuildContext context, int index) {
                 return new GameBet(
-                        homeTeamName: matches[index]["m_clube"],
-                        awayTeamName: matches[index]["v_clube"],
-                        homeTeamId: matches[index]["id_clubem"],
-                        awayTeamId: matches[index]["id_clubev"],
-                        date: matches[index]["data"] +
+                        homeTeamName: matches["jogos"][index]["m_clube"],
+                        awayTeamName: matches["jogos"][index]["v_clube"],
+                        homeTeamId: matches["jogos"][index]["id_clubem"],
+                        awayTeamId: matches["jogos"][index]["id_clubev"],
+                        date: matches["jogos"][index]["data"] +
                             " - " +
-                            matches[index]["hora"],
-                        stage: matches[index]["nome_grupo"])
+                            matches["jogos"][index]["hora"],
+                        stage: matches["jogos"][index]["nome_grupo"])
                     .getGameBetaCard(context);
               },
             ),

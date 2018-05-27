@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'views/matches-geral.dart';
+import 'views/matches/matches-geral.dart';
 import 'views/user-info.dart';
 import 'views/placar-geral.dart';
 
