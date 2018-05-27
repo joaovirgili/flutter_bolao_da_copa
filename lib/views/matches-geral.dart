@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'matches-group-stage.dart';
 import 'matches-quarterFinals.dart';
 import 'matches-round-of-sixteen.dart';
-import 'matches-semi-and-final.dart';
+import 'matches-semi.dart';
+import 'matches-final.dart';
+import '../utils/singleton.dart';
 
 enum WhyFarther { harder, smarter, selfStarter, tradingCharter }
 
@@ -20,12 +22,14 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
   _MatchesState({this.title});
   var _tabController;
   final String title;
+  var sing;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _tabController = new TabController(vsync: this, length: 4, initialIndex: 0);
+    _tabController = new TabController(vsync: this, length: 5, initialIndex: 0);
+    sing = new Singleton();
   }
 
   @override
@@ -45,7 +49,8 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
             new GroupStageMatches(),
             new RoundOfSixteen(),
             new QuarterFinals(),
-            new SemiAndFinal(),
+            new SemiFinal(),
+            new Final(),
           ],
         ),
       ),
@@ -65,9 +70,17 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
             ),
             new Tab(
               text: "Semi e Final",
+            ),
+            new Tab(
+              text:"Final"
             )
           ],
         ),
+      ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: () async {
+             print(await sing.eliminationJson);
+          },
       ),
     );
   }

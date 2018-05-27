@@ -14,8 +14,8 @@ class _QuarterFinalsState extends State<QuarterFinals> {
 
   _getMatches() async {
     final String urlMatches = "http://www.srgoool.com.br/call?ajax=get_chaves&id_ano_campeonato=434";
-    final response = await http.get(urlMatches);
     print("Loading QuarterFinals...");
+    final response = await http.get(urlMatches);
 
     if (response.statusCode == 200) {
       print("Quarterfinals loaded");
@@ -33,6 +33,13 @@ class _QuarterFinalsState extends State<QuarterFinals> {
     super.initState();
     _getMatches();
   }
+
+  @override
+    void dispose() {
+      // TODO: implement dispose
+      super.dispose();
+      matches = null;
+    }
 
 
   @override

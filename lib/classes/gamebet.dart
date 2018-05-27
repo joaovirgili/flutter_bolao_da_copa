@@ -84,7 +84,7 @@ class GameBetCard extends StatelessWidget {
                     width: 80.0,
                     child: new Column(
                       children: <Widget>[
-                        new Image.asset(homeTeamImage),
+                        new Image.asset(homeTeamImage, height: 64.0, width: 64.0,),
                         new Container(
                           height: 30.0,
                           child: new Text(
@@ -113,7 +113,7 @@ class GameBetCard extends StatelessWidget {
                     width: 80.0,
                     child: new Column(
                       children: <Widget>[
-                        new Image.asset(awayTeamImage),
+                        new Image.asset(awayTeamImage, height: 64.0, width: 64.0,),
                         new Container(
                           height: 30.0,
                           child: new Text(
