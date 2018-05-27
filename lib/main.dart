@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'views/matches/matches-geral.dart';
 import 'views/user-profile.dart';
 import 'views/placar-geral.dart';
+import 'views/login.dart';
+import 'views/register.dart';
 
 void main() => runApp(new Bolao());
 
@@ -13,32 +15,43 @@ class Bolao extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: appTitle,
-      home: new MyHome(title: appTitle),
-      theme: new ThemeData(),
+      // home: new MyHome(title: appTitle),
+      home: Login(),
+      theme: new ThemeData(
+        primaryColor: Color(0xFF0074B1),
+        fontFamily: 'Nunito',
+        
+      ),
       routes: <String, WidgetBuilder>{
+        "/Main": (BuildContext context) => new Main(title: appTitle),
         "/Matches": (BuildContext context) => new Matches(title: "Jogos"),
         "/UserProfile": (BuildContext context) => new UserProfile(title: "Minha conta"),
+        "/Register": (BuildContext context) => new Register(title: "Cadastro"),
       },
+      debugShowCheckedModeBanner: false,
     );
   }
 }
 
-class MyHome extends StatefulWidget {
+class Main extends StatefulWidget {
+  Main({Key key, this.title}) : super(key: key);
+
+  static const String routeName = "/Main";
   final String title;
 
-  MyHome({Key key, this.title}) : super(key: key);
-
   @override
-  _MyHomeState createState() => new _MyHomeState();
+  _MainState createState() => new _MainState(title: title);
 }
 
-class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin {
-
+class _MainState extends State<Main> with SingleTickerProviderStateMixin {
+  _MainState({this.title});
+  final String title;
+  
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
-        title: new Text("Bolão do É Nóis!"),
+        title: new Text(title),
       ),
       body: new PlacarGeral(),
       drawer: new Drawer(
@@ -75,19 +88,32 @@ class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin {
                   new ListTile(
                     title: new Text("Mnhas apostas"),
                     onTap: () => Navigator.popAndPushNamed(context, "/Matches"),
-                    trailing: new Image.asset("assets/icons/icons-money-coins2.png", width: 20.0, height: 20.0,),
+                    trailing: new Image.asset(
+                      "assets/icons/icons-money-coins2.png",
+                      width: 20.0,
+                      height: 20.0,
+                    ),
                   ),
                   new Divider(),
                   new ListTile(
                     title: new Text("Resultados"),
                     onTap: () => null,
-                    trailing: new Image.asset("assets/icons/icons-stadium.png", height: 20.0, width: 20.0,),
+                    trailing: new Image.asset(
+                      "assets/icons/icons-stadium.png",
+                      height: 20.0,
+                      width: 20.0,
+                    ),
                   ),
                   new Divider(),
                   new ListTile(
                     title: new Text("Minha conta"),
-                    onTap: () => Navigator.popAndPushNamed(context, "/UserProfile"),
-                    trailing: new Image.asset("assets/icons/icons-soccer-player.png", width: 20.0, height: 20.0,),
+                    onTap: () =>
+                        Navigator.popAndPushNamed(context, "/UserProfile"),
+                    trailing: new Image.asset(
+                      "assets/icons/icons-soccer-player.png",
+                      width: 20.0,
+                      height: 20.0,
+                    ),
                   )
                 ],
               ),
@@ -98,7 +124,10 @@ class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin {
                 onPressed: () => print("logout user"),
                 fillColor: Colors.redAccent,
                 splashColor: Colors.red,
-                child: new Text("Logout", style: new TextStyle(color: Colors.white),),
+                child: new Text(
+                  "Logout",
+                  style: new TextStyle(color: Colors.white),
+                ),
                 shape: new StadiumBorder(),
               ),
             ),

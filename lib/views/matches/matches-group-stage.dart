@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter_bolao/classes/gamebet.dart';
 import '../../utils/singleton.dart';
 
-
 class GroupStageMatches extends StatefulWidget {
   @override
   _GroupStageMatchesState createState() => new _GroupStageMatchesState();
@@ -11,19 +10,17 @@ class GroupStageMatches extends StatefulWidget {
 
 class _GroupStageMatchesState extends State<GroupStageMatches> {
   var matches;
-  var _isLoading = true;
-
-  Future _getJson() async {
-    this.matches = await new Singleton().getGroupsJson();
-    setState(() {
-      this._isLoading = false;
-    });
-  }
+  bool _isLoading = true;
+  Singleton sing;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    sing = new Singleton();
+    sing.update.addListener(sing.updateGroupsJson);
+    sing.loading.addListener(_setLoading);
+    sing.updateGroupsJson();
     _getJson();
   }
 
@@ -32,6 +29,34 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
     // TODO: implement dispose
     super.dispose();
     matches = null;
+  }
+
+  _setLoading() {
+    setState(() {
+      if (sing.loading.value) this._isLoading = true;
+      else {
+        this.matches = sing.getGroupsJson();
+        this._isLoading = false;
+      }
+    });
+  }
+  // Future _updateData() async {
+  //   print("update data started");
+  //   setState(() {
+  //     _isLoading = true;
+  //   });
+  //   await sing.updateData();
+  //   print("update data finished");
+  //   setState(() {
+  //     _isLoading = false;
+  //   });
+  // }
+
+  Future _getJson() async {
+    this.matches = await sing.getGroupsJson();
+    setState(() {
+      this._isLoading = false;
+    });
   }
 
   @override

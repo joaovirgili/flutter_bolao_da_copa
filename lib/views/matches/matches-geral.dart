@@ -20,7 +20,7 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
   _MatchesState({this.title});
   var _tabController;
   final String title;
-  var sing;
+  Singleton sing;
 
   @override
   void initState() {
@@ -53,35 +53,27 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
         ),
       ),
       bottomNavigationBar: new Material(
-        color: Colors.blueAccent,
+        color: Theme.of(context).primaryColor,
         child: new TabBar(
           controller: _tabController,
           tabs: <Widget>[
-            new Tab(
-              text: "Grupos",
-            ),
-            new Tab(
-              text: "Oitavas",
-            ),
-            new Tab(
-              text: "Quartas",
-            ),
-            new Tab(
-              text: "Semi",
-            ),
-            new Tab(
-              text:"Final"
-            )
+            new Tab(text: "Grupos"),
+            new Tab(text: "Oitavas"),
+            new Tab(text: "Quartas"),
+            new Tab(text: "Semi"),
+            new Tab(text: "Final"),
           ],
         ),
       ),
       floatingActionButton: new FloatingActionButton(
         onPressed: () {
-          setState(() {
-            sing.updateData();
-          });
+            if (sing.update.value) sing.update.value = false;
+            else sing.update.value = true;
+            // sing.updateData();
         }
       ),
     );
   }
+
+
 }
