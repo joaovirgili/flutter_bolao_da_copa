@@ -77,11 +77,6 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: () async {
-             print(await sing.eliminationJson);
-          },
-      ),
     );
   }
 }
