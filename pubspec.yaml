@@ -60,6 +60,17 @@ flutter:
     - assets/608.png
     - assets/624.png
     - assets/666.png
+    - assets/icons/icons-medal-1-trophy.png
+    - assets/icons/icons-medal-2.png
+    - assets/icons/icons-medal-3.png
+    - assets/icons/icons-money-coins.png
+    - assets/icons/icons-money-coins2.png
+    - assets/icons/icons-money-giving.png
+    - assets/icons/icons-money-receive.png
+    - assets/icons/icons-soccer-player.png
+    - assets/icons/icons-stadium.png
+    - assets/icons/icons-worldcup-trophy.png
+    
     
 
 

@@ -113,9 +113,20 @@ class _MyHomeState extends State<MyHome> with SingleTickerProviderStateMixin {
                   new ListTile(
                     title: new Text("Mnhas apostas"),
                     onTap: () => Navigator.popAndPushNamed(context, "/Matches"),
-                    trailing: new Icon(Icons.monetization_on),
+                    trailing: new Image.asset("assets/icons/icons-money-coins2.png", width: 20.0, height: 20.0,),
                   ),
                   new Divider(),
+                  new ListTile(
+                    title: new Text("Resultados"),
+                    onTap: () => null,
+                    trailing: new Image.asset("assets/icons/icons-stadium.png", height: 20.0, width: 20.0,),
+                  ),
+                  new Divider(),
+                  new ListTile(
+                    title: new Text("Minha conta"),
+                    onTap: () => null,
+                    trailing: new Image.asset("assets/icons/icons-soccer-player.png", width: 20.0, height: 20.0,),
+                  )
                 ],
               ),
             ),

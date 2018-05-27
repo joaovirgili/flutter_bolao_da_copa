@@ -69,13 +69,20 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
               text: "Quartas",
             ),
             new Tab(
-              text: "Semi e Final",
+              text: "Semi",
             ),
             new Tab(
               text:"Final"
             )
           ],
         ),
+      ),
+      floatingActionButton: new FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            sing.updateData();
+          });
+        }
       ),
     );
   }
