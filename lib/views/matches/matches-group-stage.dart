@@ -20,12 +20,13 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
     sing = new Singleton();
     sing.update.addListener(sing.updateGroupsJson);
     sing.loading.addListener(_setLoading);
-    sing.updateGroupsJson();
     if (sing.isEliminationLoaded) {
       this._isLoading = false;
     } else {
-      _getJson();
+      sing.updateGroupsJson();
+      this._isLoading = true;
     }
+    _getJson();
   }
 
   @override
@@ -38,23 +39,25 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
   }
 
   _setLoading() async {
-    if (sing.loading.value && this.mounted) {
-      setState(() {
-        this._isLoading = true;
-      });
-    } else {
-      this.matches = await sing.getGroupsJson();
-      if (this.mounted) {
+    if (this.mounted) {
+      if (sing.loading.value) {
         setState(() {
-          this._isLoading = false;
+          this._isLoading = true;
         });
+      } else {
+        if (this.mounted) {
+          this.matches = await sing.getGroupsJson();
+          setState(() {
+            this._isLoading = false;
+          });
+        }
       }
     }
   }
 
   Future _getJson() async {
-    this.matches = await sing.getGroupsJson();
     if (this.mounted) {
+      this.matches = await sing.getGroupsJson();
       setState(() {
         this._isLoading = false;
       });
@@ -67,7 +70,7 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
       child: _isLoading
           ? new Center(child: new CircularProgressIndicator())
           : new ListView.builder(
-              itemCount: matches["jogos"].length,
+              itemCount: matches != null ? matches["jogos"].length : 0,
               itemBuilder: (BuildContext context, int index) {
                 return new GameBet(
                         homeTeamName: matches["jogos"][index]["m_clube"],

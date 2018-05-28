@@ -38,23 +38,22 @@ class _RoundOfSixteenState extends State<RoundOfSixteen> {
   //   }
 
   var matches;
-  var _isLoading;
+  bool _isLoading = true;
   Singleton sing;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    print("ok");
     sing = new Singleton();
     // sing.update.addListener(sing.updateEliminationJson());
     sing.loading.addListener(_setLoading);
-    sing.updateEliminationJson();
     if (sing.isEliminationLoaded) {
       this._isLoading = false;
     } else {
-      _getJson();
+      sing.updateEliminationJson();
     }
+    _getJson();
   }
 
   @override
@@ -64,16 +63,17 @@ class _RoundOfSixteenState extends State<RoundOfSixteen> {
     sing.update.addListener(null);
     sing.loading.addListener(null);
     matches = null;
+    this._isLoading = false;
   }
 
   _setLoading() async {
-    if (sing.loading.value && this.mounted) {
-      setState(() {
-        this._isLoading = true;
-      });
-    } else {
-      this.matches = await sing.getEliminationJson();
-      if (this.mounted) {
+    if (this.mounted) {
+      if (sing.loading.value) {
+        setState(() {
+          this._isLoading = true;
+        });
+      } else {
+        this.matches = await sing.getEliminationJson();
         setState(() {
           this._isLoading = false;
         });
@@ -82,8 +82,8 @@ class _RoundOfSixteenState extends State<RoundOfSixteen> {
   }
 
   Future _getJson() async {
-    this.matches = await sing.getEliminationJson();
     if (this.mounted) {
+      this.matches = await sing.getEliminationJson();
       setState(() {
         this._isLoading = false;
       });
@@ -97,7 +97,7 @@ class _RoundOfSixteenState extends State<RoundOfSixteen> {
         child: _isLoading
             ? new Center(child: new CircularProgressIndicator())
             : new ListView.builder(
-                itemCount: matches["fases"][0]["jogos"].length,
+                itemCount: matches!= null? matches["fases"][0]["jogos"].length : 0,
                 itemBuilder: (BuildContext context, int index) {
                   return new GameBet(
                           homeTeamName: matches["fases"][0]["jogos"][index]

@@ -70,7 +70,8 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
             if (sing.update.value) sing.update.value = false;
             else sing.update.value = true;
             // sing.updateData();
-        }
+        },
+        child: new Icon(Icons.refresh),
       ),
     );
   }
