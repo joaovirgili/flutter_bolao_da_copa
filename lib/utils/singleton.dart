@@ -9,6 +9,8 @@ class Singleton {
   Future<Map<String, dynamic>> _eliminationJson;
   ValueNotifier<bool> loading = new ValueNotifier<bool>(null);
   ValueNotifier<bool> update = new ValueNotifier<bool>(false);
+  bool isGroupsLoaded = false;
+  bool isEliminationLoaded = false;
 
   factory Singleton() {
     return _singleton;
@@ -28,10 +30,12 @@ class Singleton {
 
   updateGroupsJson() {
     _groupsJson = this.getJson("http://www.srgoool.com.br/call?ajax=get_classificacao2&id_fase=1796");
+    isGroupsLoaded = true;
   }
 
   updateEliminationJson() {
     _eliminationJson = this.getJson("http://www.srgoool.com.br/call?ajax=get_chaves&id_ano_campeonato=434");
+    isEliminationLoaded = true;
   }
 
   getGroupsJson() {

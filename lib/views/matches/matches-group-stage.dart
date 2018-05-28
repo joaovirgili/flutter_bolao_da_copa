@@ -21,42 +21,44 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
     sing.update.addListener(sing.updateGroupsJson);
     sing.loading.addListener(_setLoading);
     sing.updateGroupsJson();
-    _getJson();
+    if (sing.isEliminationLoaded) {
+      this._isLoading = false;
+    } else {
+      _getJson();
+    }
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
+    sing.update.addListener(null);
+    sing.loading.addListener(null);
     matches = null;
   }
 
-  _setLoading() {
-    setState(() {
-      if (sing.loading.value) this._isLoading = true;
-      else {
-        this.matches = sing.getGroupsJson();
-        this._isLoading = false;
+  _setLoading() async {
+    if (sing.loading.value && this.mounted) {
+      setState(() {
+        this._isLoading = true;
+      });
+    } else {
+      this.matches = await sing.getGroupsJson();
+      if (this.mounted) {
+        setState(() {
+          this._isLoading = false;
+        });
       }
-    });
+    }
   }
-  // Future _updateData() async {
-  //   print("update data started");
-  //   setState(() {
-  //     _isLoading = true;
-  //   });
-  //   await sing.updateData();
-  //   print("update data finished");
-  //   setState(() {
-  //     _isLoading = false;
-  //   });
-  // }
 
   Future _getJson() async {
     this.matches = await sing.getGroupsJson();
-    setState(() {
-      this._isLoading = false;
-    });
+    if (this.mounted) {
+      setState(() {
+        this._isLoading = false;
+      });
+    }
   }
 
   @override
