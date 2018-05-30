@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Register extends StatefulWidget {
   Register({Key key, this.title}) : super(key: key);
   final title;
-  static const String routeName = "/Main";
+  static const String routeName = "/Register";
 
   @override
   _RegisterState createState() => new _RegisterState(title: title);

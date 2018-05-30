@@ -6,6 +6,10 @@ import 'views/placar-geral.dart';
 import 'views/login.dart';
 import 'views/register.dart';
 
+import 'utils/auth.dart';
+
+import 'classes/root.dart';
+
 void main() => runApp(new Bolao());
 
 class Bolao extends StatelessWidget {
@@ -16,17 +20,21 @@ class Bolao extends StatelessWidget {
     return new MaterialApp(
       title: appTitle,
       // home: new MyHome(title: appTitle),
-      home: Login(),
+      // home: Login(),
+      home: RootPage(
+        auth: new Auth(),
+      ),
       theme: new ThemeData(
         primaryColor: Color(0xFF0074B1),
         fontFamily: 'Nunito',
-        
       ),
       routes: <String, WidgetBuilder>{
         "/Main": (BuildContext context) => new Main(title: appTitle),
         "/Matches": (BuildContext context) => new Matches(title: "Jogos"),
-        "/UserProfile": (BuildContext context) => new UserProfile(title: "Minha conta"),
+        "/UserProfile": (BuildContext context) =>
+            new UserProfile(title: "Minha conta"),
         "/Register": (BuildContext context) => new Register(title: "Cadastro"),
+        "/Login": (BuildContext context) => new Login()
       },
       debugShowCheckedModeBanner: false,
     );
@@ -34,24 +42,39 @@ class Bolao extends StatelessWidget {
 }
 
 class Main extends StatefulWidget {
-  Main({Key key, this.title}) : super(key: key);
+  Main({Key key, this.title, this.auth}) : super(key: key);
 
   static const String routeName = "/Main";
   final String title;
+  final BaseAuth auth;
 
   @override
-  _MainState createState() => new _MainState(title: title);
+  _MainState createState() => new _MainState(title: title, auth: this.auth);
 }
 
 class _MainState extends State<Main> with SingleTickerProviderStateMixin {
-  _MainState({this.title});
+  _MainState({this.title, this.auth});
   final String title;
-  
+  final BaseAuth auth;
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         title: new Text(title),
+        actions: <Widget>[
+          new FlatButton(
+            onPressed: () {
+              new Auth().signOut();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, "/Login", (v) => false);
+            },
+            child: new Text(
+              "Logout",
+              style: new TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       ),
       body: new PlacarGeral(),
       drawer: new Drawer(
@@ -121,7 +144,11 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
             new Container(
               padding: const EdgeInsets.only(bottom: 5.0),
               child: new RawMaterialButton(
-                onPressed: () => print("logout user"),
+                onPressed: () {
+                  new Auth().signOut();
+                  Navigator.pushNamedAndRemoveUntil(
+                      context, "/Login", (v) => false);
+                },
                 fillColor: Colors.redAccent,
                 splashColor: Colors.red,
                 child: new Text(

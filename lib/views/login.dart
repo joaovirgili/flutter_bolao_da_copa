@@ -1,27 +1,45 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/auth.dart';
 
-class Login extends StatefulWidget {
+class Login extends StatefulWidget {  
+  Login({this.auth});
+
+  final BaseAuth auth;
+  static const String routeName = "/Main";
+
+
   @override
-  _LoginState createState() => new _LoginState();
+  _LoginState createState() => new _LoginState(auth: auth);
 }
 
 class _LoginState extends State<Login> {
+  _LoginState({this.auth});
+
   final formKey = new GlobalKey<FormState>();
   String _email;
   String _password;
+  final BaseAuth auth;
 
   void validateAndSave() async {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
-      print(await Auth().signInWithEmailAndPassword(_email, _password));
-      print("Usuario: $_email e senha: $_password");
-    } else {
-      print("Form invalidado.");
-    }  
-      
+      try {
+        await new Auth().signInWithEmailAndPassword(_email, _password);
+        print("Usuario: $_email e senha: $_password");
+        // Scaffold.of(context).showSnackBar(new SnackBar(
+        //   content: new Text("Login efetuado com sucesso"),
+        //   duration: new Duration(seconds: 3),
+        // ));
+        Navigator.pushNamedAndRemoveUntil(context, "/Main", (v) => false);
+      } catch (e) {
+        // Scaffold.of(context).showSnackBar(new SnackBar(
+        //   content: new Text("Não foi possível efetuar o login."),
+        //   duration: new Duration(seconds: 3),
+        // ));
+        print(e);
+      }
+    }
   }
 
   @override
@@ -90,35 +108,37 @@ class _LoginState extends State<Login> {
                           style:
                               TextStyle(color: Colors.black54, fontSize: 12.0),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Scaffold.of(context).showSnackBar(new SnackBar(
+                            content: new Text("Teste"),
+                            duration: new Duration(seconds: 3),
+                          ));
+                        },
                       ),
                     ],
                   ),
-                  
                 ],
               ),
             ),
             new Padding(
-                    padding: const EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 0.0),
-                    child: Material(
-                      borderRadius: BorderRadius.circular(30.0),
-                      shadowColor: Colors.red.shade100,
-                      elevation: 5.0,
-                      child: MaterialButton(
-                        height: 42.0,
-                        onPressed: () {
-                          validateAndSave();
-                          // Navigator.pushNamedAndRemoveUntil(
-                          //     context, "/Main", (v) => false);
-                        },
-                        color: Theme.of(context).primaryColor,
-                        child: new Text(
-                          "Log in",
-                          style: new TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    ),
+              padding: const EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 0.0),
+              child: Material(
+                borderRadius: BorderRadius.circular(30.0),
+                shadowColor: Colors.red.shade100,
+                elevation: 5.0,
+                child: MaterialButton(
+                  height: 42.0,
+                  onPressed: () {
+                    validateAndSave();
+                  },
+                  color: Theme.of(context).primaryColor,
+                  child: new Text(
+                    "Log in",
+                    style: new TextStyle(color: Colors.white),
                   ),
+                ),
+              ),
+            ),
             new FlatButton(
               child: new Text(
                 "Ainda não tem cadastro?",
