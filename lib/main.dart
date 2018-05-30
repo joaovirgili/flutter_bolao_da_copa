@@ -61,16 +61,11 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
   final BaseAuth auth;
   String _username, _displayName;
 
-  Future<String> _getUsername() async {
-    FirebaseUser user = await auth.currentUser();
-    return user.email;
-  }
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    auth.currentUser().then((user) {
+    new Auth().currentUser().then((user) {
       setState(() {
         _username = user.email;
         _displayName = user.displayName == null ? "" : user.displayName;
@@ -112,8 +107,8 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        new Text(_displayName), //username
-                        new Text(_username),
+                        new Text(_displayName != null ? _displayName : ""), //username
+                        new Text(_username != null ? _username : ""),
                         // new Text("sr.joaovirgili@gmail.com") //user email
                       ],
                     ),
