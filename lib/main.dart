@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'views/matches/matches-geral.dart';
@@ -56,6 +59,24 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
   _MainState({this.title, this.auth});
   final String title;
   final BaseAuth auth;
+  String _username, _displayName;
+
+  Future<String> _getUsername() async {
+    FirebaseUser user = await auth.currentUser();
+    return user.email;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    auth.currentUser().then((user) {
+      setState(() {
+        _username = user.email;
+        _displayName = user.displayName == null ? "" : user.displayName;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,11 +112,12 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        new Text("JP"),
-                        new Text("sr.joaovirgili@gmail.com")
+                        new Text(_displayName), //username
+                        new Text(_username),
+                        // new Text("sr.joaovirgili@gmail.com") //user email
                       ],
                     ),
-                    new Text("32 pontos")
+                    new Text("32 pontos") //user scores
                   ],
                 ),
               ),
