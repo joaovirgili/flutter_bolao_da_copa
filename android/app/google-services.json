@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "993189889765",
+    "firebase_url": "https://bolao-da-copa-2018-c63ad.firebaseio.com",
+    "project_id": "bolao-da-copa-2018-c63ad",
+    "storage_bucket": "bolao-da-copa-2018-c63ad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:993189889765:android:5a41a00d56adcd35",
+        "android_client_info": {
+          "package_name": "com.example.flutterbolao"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "993189889765-s2k702ckamvslmmhtqcgtvnpgc81jj3k.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "993189889765-s2k702ckamvslmmhtqcgtvnpgc81jj3k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCMxVVhTV-EdEaBn21PkHNobJTBjMqA-Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
