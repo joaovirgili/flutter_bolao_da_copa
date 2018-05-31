@@ -52,18 +52,18 @@ class _LoginState extends State<Login> {
     return new Scaffold(
       body: new Container(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: new ListView(
-          padding: const EdgeInsets.only(top: 100.0),
+        child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.only(bottom: 24.0),
+              padding: const EdgeInsets.only(bottom: 10.0),
               child: new Hero(
                 tag: "hero",
                 child: new Image.asset(
                   "assets/world-cup-logo.png",
                   repeat: ImageRepeat.noRepeat,
-                  width: 200.0,
-                  height: 200.0,
+                  width: 175.0,
+                  height: 175.0,
                 ),
               ),
             ),
@@ -126,7 +126,7 @@ class _LoginState extends State<Login> {
               ),
             ),
             new Padding(
-              padding: const EdgeInsets.fromLTRB(32.0, 16.0, 32.0, 0.0),
+              padding: const EdgeInsets.fromLTRB(32.0, 0.0, 32.0, 0.0),
               child: Material(
                 borderRadius: BorderRadius.circular(30.0),
                 shadowColor: Colors.red.shade100,

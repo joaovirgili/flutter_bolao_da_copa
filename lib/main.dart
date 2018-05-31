@@ -57,7 +57,7 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
   _MainState({this.title, this.auth});
   final String title;
   final BaseAuth auth;
-  String _userEmail, _userName, _userPhoto;
+  String _userEmail = "", _userName = "", _userPhoto = "";
 
   @override
   void initState() {
