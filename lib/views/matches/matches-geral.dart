@@ -5,21 +5,25 @@ import 'matches-round-of-sixteen.dart';
 import 'matches-semi.dart';
 import 'matches-final.dart';
 import '../../utils/singleton.dart';
+import '../../utils/auth.dart';
 
 class Matches extends StatefulWidget {
-  Matches({Key key, this.title}) : super(key: key);
+  Matches({Key key, this.title, this.auth}) : super(key: key);
 
   static const String routeName = "/Matches";
   final String title;
+  final BaseAuth auth;
 
   @override
-  _MatchesState createState() => new _MatchesState(title: title);
+  _MatchesState createState() => new _MatchesState(title: title, auth:auth);
 }
 
 class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
-  _MatchesState({this.title});
-  var _tabController;
+  _MatchesState({this.title, this.auth});
   final String title;
+  final BaseAuth auth;
+
+  var _tabController;
   Singleton sing;
 
   @override

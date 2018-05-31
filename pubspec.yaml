@@ -10,6 +10,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.0
   firebase_auth: "^0.5.10"
+  camera:
 
 dev_dependencies:
   flutter_test:
@@ -72,6 +73,10 @@ flutter:
     - assets/icons/icons-soccer-player.png
     - assets/icons/icons-stadium.png
     - assets/icons/icons-worldcup-trophy.png
+    - assets/icons/icons-user.png
+    - assets/icons/icons-user2.png
+    - assets/icons/icons-user3.png
+    - assets/icons/icons-user4.png
     - assets/world-cup-logo.png
     - assets/eh_nois.jpg
     

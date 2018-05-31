@@ -5,18 +5,21 @@ import 'package:flutter/material.dart';
 import '../utils/auth.dart';
 
 class Register extends StatefulWidget {
-  Register({Key key, this.title}) : super(key: key);
-  final title;
+  Register({Key key, this.title, this.auth}) : super(key: key);
+  final String title;
+  final BaseAuth auth;
   static const String routeName = "/Register";
 
   @override
-  _RegisterState createState() => new _RegisterState(title: title);
+  _RegisterState createState() => new _RegisterState(title: title, auth:auth);
 }
 
 class _RegisterState extends State<Register> {
-  _RegisterState({this.title});
-  final title;
+  _RegisterState({this.title, this.auth});
+  final String title;
+  final BaseAuth auth;
   final formKey = new GlobalKey<FormState>();
+  
   String _email, _password, _passwordConfirm;
 
   Future validateAndSave() async {
@@ -26,11 +29,14 @@ class _RegisterState extends State<Register> {
       if (_password == _passwordConfirm) {
         try {
           await new Auth().createUserWithEmailAndPassword(_email, _password);
+          Navigator.pushNamedAndRemoveUntil(context, "/Login", (v) => false);
         } catch(e) {
           print(e);
+          //snackbar
         }
       }
       else {
+        //snackbar
         print("Senhas não conferem.");
       }
     }

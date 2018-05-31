@@ -25,13 +25,18 @@ class _LoginState extends State<Login> {
     if (form.validate()) {
       form.save();
       try {
-        await new Auth().signInWithEmailAndPassword(_email, _password);
-        print("Usuario: $_email e senha: $_password");
+        await auth.signInWithEmailAndPassword(_email, _password);
         // Scaffold.of(context).showSnackBar(new SnackBar(
         //   content: new Text("Login efetuado com sucesso"),
         //   duration: new Duration(seconds: 3),
         // ));
-        Navigator.pushNamedAndRemoveUntil(context, "/Main", (v) => false);
+        auth.currentUser().then((user) {
+          if (user.displayName == null) {
+            Navigator.pushNamedAndRemoveUntil(context, "/AddInfo", (v) => false);
+          } else {
+            Navigator.pushNamedAndRemoveUntil(context, "/Main", (v) => false);
+          }
+        });
       } catch (e) {
         // Scaffold.of(context).showSnackBar(new SnackBar(
         //   content: new Text("Não foi possível efetuar o login."),

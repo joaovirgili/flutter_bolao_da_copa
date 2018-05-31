@@ -1,13 +1,11 @@
-import 'dart:async';
-
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'views/matches/matches-geral.dart';
-import 'views/user-profile.dart';
+import 'views/my-account.dart';
 import 'views/placar-geral.dart';
 import 'views/login.dart';
 import 'views/register.dart';
+import 'views/add-user-info.dart';
 
 import 'utils/auth.dart';
 
@@ -17,27 +15,27 @@ void main() => runApp(new Bolao());
 
 class Bolao extends StatelessWidget {
   final appTitle = "Bolão da Copa";
+  final BaseAuth auth = new Auth();
 
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: appTitle,
-      // home: new MyHome(title: appTitle),
-      // home: Login(),
       home: RootPage(
-        auth: new Auth(),
+        auth: auth,
       ),
       theme: new ThemeData(
         primaryColor: Color(0xFF0074B1),
         fontFamily: 'Nunito',
       ),
       routes: <String, WidgetBuilder>{
-        "/Main": (BuildContext context) => new Main(title: appTitle),
-        "/Matches": (BuildContext context) => new Matches(title: "Jogos"),
+        "/Main": (BuildContext context) => new Main(title: appTitle, auth: auth,),
+        "/Matches": (BuildContext context) => new Matches(title: "Jogos", auth:auth),
         "/UserProfile": (BuildContext context) =>
-            new UserProfile(title: "Minha conta"),
-        "/Register": (BuildContext context) => new Register(title: "Cadastro"),
-        "/Login": (BuildContext context) => new Login()
+            new UserProfile(title: "Minha conta", auth:auth),
+        "/Register": (BuildContext context) => new Register(title: "Cadastro", auth:auth),
+        "/Login": (BuildContext context) => new Login(auth: auth,),
+        "/AddInfo": (BuildContext context) => new AddUserInfo(title: "Completar cadastro", auth: auth),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -59,7 +57,7 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
   _MainState({this.title, this.auth});
   final String title;
   final BaseAuth auth;
-  String _username, _displayName;
+  String _userEmail, _userName, _userPhoto;
 
   @override
   void initState() {
@@ -67,8 +65,9 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
     super.initState();
     new Auth().currentUser().then((user) {
       setState(() {
-        _username = user.email;
-        _displayName = user.displayName == null ? "" : user.displayName;
+        _userEmail = user.email;
+        _userName = user.displayName == null ? "" : user.displayName;
+        _userPhoto = user.photoUrl;
       });
     });
   }
@@ -103,22 +102,25 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    new Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        new Text(_displayName != null ? _displayName : ""), //username
-                        new Text(_username != null ? _username : ""),
-                        // new Text("sr.joaovirgili@gmail.com") //user email
-                      ],
+                    new Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: new Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          new Text(_userName), //username
+                          new Text(_userEmail != null ? _userEmail : ""),
+                        ],
+                      ),
                     ),
                     new Text("32 pontos") //user scores
                   ],
                 ),
               ),
               currentAccountPicture: new CircleAvatar(
-                backgroundImage: new NetworkImage(
-                    "https://scontent.frec10-1.fna.fbcdn.net/v/t1.0-9/1610793_866622000015920_483298332116560229_n.jpg?_nc_cat=0&_nc_eui2=AeG6hU5O9bpn45wXmq1n9NAAANWLqqLyA7_2COR8Etat_yq17RL1swPzildCKkevNXeRtVfslx0u4q6axGzaAtNehwcfAV25AzvEnUwZurna0w&oh=cffd6dfcf18036fc763ee26370795752&oe=5BC4F882"),
+                backgroundImage: _userPhoto == null ? new AssetImage("assets/icons/icons-user2.png") : new NetworkImage(_userPhoto),
+                // backgroundImage: new AssetImage("assets/icons/icons-user2.png"),
+                backgroundColor: Theme.of(context).primaryColor,
               ),
               accountEmail: null,
             ),

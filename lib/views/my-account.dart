@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
 
+import '../utils/auth.dart';
+
 
 class UserProfile extends StatefulWidget {
-  UserProfile({Key key, this.title}) : super(key: key);
+  UserProfile({Key key, this.title, this.auth}) : super(key: key);
 
   static const String routeName = "/UserProfile";
   final String title;
+  final BaseAuth auth;
   
   @override
-  _UserProfileState createState() => new _UserProfileState(title: title);
+  _UserProfileState createState() => new _UserProfileState(title: title, auth:auth);
 }
 
 class _UserProfileState extends State<UserProfile> {
-  _UserProfileState({this.title});
+  _UserProfileState({this.title, this.auth});
 
-  String title;
+  final String title;
+  final BaseAuth auth;
 
   @override
   Widget build(BuildContext context) {
