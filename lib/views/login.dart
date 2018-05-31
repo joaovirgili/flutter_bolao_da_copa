@@ -25,10 +25,10 @@ class _LoginState extends State<Login> {
       form.save();
       try {
         await auth.signInWithEmailAndPassword(_email, _password);
-        Scaffold.of(context).showSnackBar(new SnackBar(
-              content: new Text("Login efetuado com sucesso"),
-              duration: new Duration(seconds: 3),
-            ));
+        // Scaffold.of(context).showSnackBar(new SnackBar(
+        //       content: new Text("Login efetuado com sucesso"),
+        //       duration: new Duration(seconds: 3),
+        //     ));
         auth.currentUser().then((user) {
           if (user.displayName == null) {
             Navigator.pushNamedAndRemoveUntil(
@@ -38,10 +38,10 @@ class _LoginState extends State<Login> {
           }
         });
       } catch (e) {
-        Scaffold.of(context).showSnackBar(new SnackBar(
-              content: new Text("Não foi possível efetuar o login."),
-              duration: new Duration(seconds: 3),
-            ));
+        // Scaffold.of(context).showSnackBar(new SnackBar(
+        //       content: new Text("Não foi possível efetuar o login."),
+        //       duration: new Duration(seconds: 3),
+        //     ));
         print(e);
       }
     }
