@@ -6,6 +6,7 @@ abstract class BaseAuth {
   Future<FirebaseUser> createUserWithEmailAndPassword(String email, String password);
   Future<FirebaseUser> currentUser();
   Future<void> signOut();
+  updateProfile(String email, String photo);
 }
 
 class Auth implements BaseAuth {
@@ -34,5 +35,13 @@ class Auth implements BaseAuth {
   Future<void> signOut() {
     return _firebaseAuth.signOut();
   }
+
+  updateProfile(String email, String photo) async {
+    UserUpdateInfo updateInfo = new UserUpdateInfo();
+    updateInfo.displayName = email;
+    updateInfo.photoUrl = photo;
+    await _firebaseAuth.updateProfile(updateInfo);
+  }
+
 
 }
