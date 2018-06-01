@@ -28,13 +28,32 @@ class Singleton {
   //   print("loading false");
   // }
 
+  showLoadingDialog(BuildContext context) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) => new AlertDialog(
+              content: new Row(
+                children: <Widget>[
+                  new CircularProgressIndicator(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: new Text("Loading..."),
+                  ),
+                ],
+              ),
+            ));
+  }
+
   updateGroupsJson() {
-    _groupsJson = this.getJson("http://www.srgoool.com.br/call?ajax=get_classificacao2&id_fase=1796");
+    _groupsJson = this.getJson(
+        "http://www.srgoool.com.br/call?ajax=get_classificacao2&id_fase=1796");
     isGroupsLoaded = true;
   }
 
   updateEliminationJson() {
-    _eliminationJson = this.getJson("http://www.srgoool.com.br/call?ajax=get_chaves&id_ano_campeonato=434");
+    _eliminationJson = this.getJson(
+        "http://www.srgoool.com.br/call?ajax=get_chaves&id_ano_campeonato=434");
     isEliminationLoaded = true;
   }
 
@@ -50,7 +69,7 @@ class Singleton {
     this.loading.value = true;
     print("loading");
     final response = await http.get(url);
-    
+
     if (response.statusCode == 200) {
       print("loaded");
       var teste = json.decode(response.body);
@@ -62,6 +81,3 @@ class Singleton {
     }
   }
 }
-
-
-

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../utils/auth.dart';
 import '../utils/storage.dart';
+import '../utils/singleton.dart';
 
 class AddUserInfo extends StatefulWidget {
   AddUserInfo({this.title, this.auth});
@@ -26,8 +27,8 @@ class _AddUserInfoState extends State<AddUserInfo> {
   final String title;
 
   final formKey = new GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   String _userName;
-  String _imageError = "";
   File _image;
   ScrollController _scrollController = new ScrollController();
   FocusNode _focus = new FocusNode();
@@ -49,7 +50,6 @@ class _AddUserInfoState extends State<AddUserInfo> {
     if (image != null) {
       setState(() {
         _image = image;
-        _imageError = "";
       });
     }
     Navigator.pop(context);
@@ -62,19 +62,23 @@ class _AddUserInfoState extends State<AddUserInfo> {
         form.save();
         Storage().uploadImage(_userName, _image).then((photoUri) async {
           await auth.updateProfile(_userName, photoUri.toString());
+          Navigator.pop(context);
           Navigator.pushNamedAndRemoveUntil(context, "/Main", (v) => false);
         });
       }
     } else {
-      setState(() {
-        _imageError = "Insira uma foto";
-      });
+      Navigator.pop(context);
+      scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text("Selecione uma foto de perfil."),
+        duration: new Duration(seconds: 3),
+      ));
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: scaffoldKey,
       appBar: new AppBar(
         title: new Text(title),
       ),
@@ -87,7 +91,7 @@ class _AddUserInfoState extends State<AddUserInfo> {
             controller: _scrollController,
             children: <Widget>[
               new Padding(
-                padding: const EdgeInsets.fromLTRB(32.0, 12.0, 32.0, 0.0),
+                padding: const EdgeInsets.fromLTRB(86.0, 12.0, 86.0, 0.0),
                 child: Material(
                   borderRadius: BorderRadius.circular(30.0),
                   shadowColor: Colors.red.shade100,
@@ -95,6 +99,7 @@ class _AddUserInfoState extends State<AddUserInfo> {
                   child: MaterialButton(
                     height: 42.0,
                     onPressed: () {
+                      new Singleton().showLoadingDialog(context);
                       saveInfo();
                     },
                     color: Theme.of(context).primaryColor,
@@ -106,7 +111,7 @@ class _AddUserInfoState extends State<AddUserInfo> {
                 ),
               ),
               new Padding(
-                padding: const EdgeInsets.only(top: 0.0),
+                padding: const EdgeInsets.fromLTRB(32.0, 12.0, 32.0, 0.0),
                 child: Form(
                   key: formKey,
                   child: new TextFormField(
@@ -124,10 +129,6 @@ class _AddUserInfoState extends State<AddUserInfo> {
                     onSaved: (value) => this._userName = value,
                   ),
                 ),
-              ),
-              new Text(
-                _imageError,
-                style: new TextStyle(color: Colors.redAccent, fontSize: 15.0),
               ),
               new Center(
                 child: InkWell(
@@ -147,7 +148,8 @@ class _AddUserInfoState extends State<AddUserInfo> {
                                     new ListTile(
                                       title: new Text("Galeria"),
                                       leading: new Icon(Icons.photo),
-                                      onTap: () => getImage(SelectImage.gallery),
+                                      onTap: () =>
+                                          getImage(SelectImage.gallery),
                                     ),
                                   ],
                                 ),
@@ -164,7 +166,9 @@ class _AddUserInfoState extends State<AddUserInfo> {
                   ),
                 ),
               ),
-              // new Center(child: new Text("Clique na imagem para inserir sua foto de perfil")),
+              new Center(
+                  child: new Text(
+                      "Clique na imagem para inserir sua foto de perfil")),
               // new Text("Bem-vindo ao Bolão do Eh Nóis!"),
             ],
           ),

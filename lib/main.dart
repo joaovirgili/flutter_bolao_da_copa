@@ -31,8 +31,7 @@ class Bolao extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         "/Main": (BuildContext context) => new Main(title: appTitle, auth: auth,),
         "/Matches": (BuildContext context) => new Matches(title: "Jogos", auth:auth),
-        "/UserProfile": (BuildContext context) =>
-            new UserProfile(title: "Minha conta", auth:auth),
+        "/UserProfile": (BuildContext context) => new UserProfile(title: "Minha conta", auth:auth),
         "/Register": (BuildContext context) => new Register(title: "Cadastro", auth:auth),
         "/Login": (BuildContext context) => new Login(auth: auth,),
         "/AddInfo": (BuildContext context) => new AddUserInfo(title: "Completar cadastro", auth: auth),
@@ -108,7 +107,7 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          new Text(_userName), //username
+                          new Text(_userName),
                           new Text(_userEmail != null ? _userEmail : ""),
                         ],
                       ),
@@ -119,7 +118,6 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
               ),
               currentAccountPicture: new CircleAvatar(
                 backgroundImage: _userPhoto == null ? new AssetImage("assets/icons/icons-user2.png") : new NetworkImage(_userPhoto),
-                // backgroundImage: new AssetImage("assets/icons/icons-user2.png"),
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               accountEmail: null,

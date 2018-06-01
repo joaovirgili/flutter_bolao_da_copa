@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/singleton.dart';
 import '../utils/auth.dart';
 
 class Login extends StatefulWidget {
@@ -15,6 +16,8 @@ class _LoginState extends State<Login> {
   _LoginState({this.auth});
 
   final formKey = new GlobalKey<FormState>();
+  GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
+
   String _email;
   String _password;
   final BaseAuth auth;
@@ -25,10 +28,7 @@ class _LoginState extends State<Login> {
       form.save();
       try {
         await auth.signInWithEmailAndPassword(_email, _password);
-        // Scaffold.of(context).showSnackBar(new SnackBar(
-        //       content: new Text("Login efetuado com sucesso"),
-        //       duration: new Duration(seconds: 3),
-        //     ));
+          Navigator.pop(context);
         auth.currentUser().then((user) {
           if (user.displayName == null) {
             Navigator.pushNamedAndRemoveUntil(
@@ -38,18 +38,20 @@ class _LoginState extends State<Login> {
           }
         });
       } catch (e) {
-        // Scaffold.of(context).showSnackBar(new SnackBar(
-        //       content: new Text("Não foi possível efetuar o login."),
-        //       duration: new Duration(seconds: 3),
-        //     ));
+        scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text("Email e/ou senha inválido"),
+        duration: new Duration(seconds: 3),
+      ));
         print(e);
       }
     }
+      Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: scaffoldKey,
       body: new Container(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Center(
@@ -85,7 +87,6 @@ class _LoginState extends State<Login> {
       ),
     );
   }
-
 
   Widget myForm() {
     return new Form(
@@ -155,6 +156,7 @@ class _LoginState extends State<Login> {
         child: MaterialButton(
           height: 42.0,
           onPressed: () {
+            new Singleton().showLoadingDialog(context);
             validateAndSave();
           },
           color: Theme.of(context).primaryColor,
