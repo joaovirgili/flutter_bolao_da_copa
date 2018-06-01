@@ -37,7 +37,7 @@ class Singleton {
                 children: <Widget>[
                   new CircularProgressIndicator(),
                   Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
+                    padding: const EdgeInsets.only(left: 16.0),
                     child: new Text("Loading..."),
                   ),
                 ],

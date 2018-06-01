@@ -33,7 +33,7 @@ class Bolao extends StatelessWidget {
         "/Matches": (BuildContext context) => new Matches(title: "Jogos", auth:auth),
         "/UserProfile": (BuildContext context) => new UserProfile(title: "Minha conta", auth:auth),
         "/Register": (BuildContext context) => new Register(title: "Cadastro", auth:auth),
-        "/Login": (BuildContext context) => new Login(auth: auth,),
+        "/Login": (BuildContext context) => new Login(auth: auth),
         "/AddInfo": (BuildContext context) => new AddUserInfo(title: "Completar cadastro", auth: auth),
       },
       debugShowCheckedModeBanner: false,

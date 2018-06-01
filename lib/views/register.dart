@@ -21,13 +21,17 @@ class _RegisterState extends State<Register> {
   final BaseAuth auth;
   final formKey = new GlobalKey<FormState>();
   GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
-    ScrollController _scrollController = new ScrollController();
+  ScrollController _scrollController = new ScrollController();
   FocusNode _focus = new FocusNode();
+  FocusNode _focus2 = new FocusNode();
+  FocusNode _focus3 = new FocusNode();
 
   @override
   initState() {
     super.initState();
     _focus.addListener(_onFocusChange);
+    _focus2.addListener(_onFocusChange);
+    _focus3.addListener(_onFocusChange);
   }
 
   _onFocusChange() {
@@ -42,24 +46,27 @@ class _RegisterState extends State<Register> {
       form.save();
       if (_password == _passwordConfirm) {
         try {
+          Singleton().showLoadingDialog(scaffoldKey.currentState.context);
           await new Auth().createUserWithEmailAndPassword(_email, _password);
           Navigator.pop(context);
           Navigator.pushNamedAndRemoveUntil(context, "/AddInfo", (v) => false);
         } catch (e) {
           print(e);
+          Navigator.pop(context);
           scaffoldKey.currentState.showSnackBar(new SnackBar(
-              content: new Text("Cadastro não realizado, consulte adminstrador."),
-              duration: new Duration(seconds: 3),
-            ));
+            content: new Text("Cadastro não realizado, consulte adminstrador."),
+            duration: new Duration(seconds: 3),
+          ));
         }
       } else {
+        Navigator.pop(context);
         scaffoldKey.currentState.showSnackBar(new SnackBar(
-              content: new Text("Senha não conferem"),
-              duration: new Duration(seconds: 3),
-            ));
+          content: new Text("Senha não conferem"),
+          duration: new Duration(seconds: 3),
+        ));
       }
     }
-    Navigator.pop(context);
+    
   }
 
   @override
@@ -94,7 +101,6 @@ class _RegisterState extends State<Register> {
                 child: MaterialButton(
                   height: 42.0,
                   onPressed: () {
-                    new Singleton().showLoadingDialog(context);
                     validateAndSave();
                   },
                   color: Theme.of(context).primaryColor,
@@ -128,15 +134,15 @@ class _RegisterState extends State<Register> {
                         autofocus: false,
                         decoration: InputDecoration(
                             hintText: "Email",
-                            contentPadding:
-                                const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                            contentPadding: const EdgeInsets.fromLTRB(
+                                20.0, 10.0, 20.0, 10.0),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(32.0))),
                         validator: (value) => value.isEmpty
                             ? "E-mail precisa ser preenchido"
                             : null,
                         onSaved: (value) => this._email = value,
-                        focusNode: _focus,
+                        focusNode: _focus2,
                       )),
                   Padding(
                     padding: const EdgeInsets.only(top: 8.0),
@@ -152,7 +158,7 @@ class _RegisterState extends State<Register> {
                       validator: (value) =>
                           value.isEmpty ? "senha precisa ser preenchido" : null,
                       onSaved: (value) => this._password = value,
-                      focusNode: _focus,
+                      focusNode: _focus3,
                     ),
                   ),
                   Padding(
