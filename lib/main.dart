@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_image/network.dart';
+
 
 import 'views/matches/matches-geral.dart';
 import 'views/my-account.dart';
@@ -112,12 +115,12 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    new Text("32 pontos") //user scores
+                    new Text("0 pontos") //user scores
                   ],
                 ),
               ),
               currentAccountPicture: new CircleAvatar(
-                backgroundImage: _userPhoto == null ? new AssetImage("assets/icons/icons-user2.png") : new NetworkImage(_userPhoto),
+                backgroundImage: _userPhoto == null ? new AssetImage("assets/icons/icons-user2.png") : new NetworkImageWithRetry(_userPhoto),
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               accountEmail: null,
@@ -180,4 +183,6 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
       ),
     );
   }
+
+
 }
