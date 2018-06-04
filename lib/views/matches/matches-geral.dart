@@ -43,6 +43,14 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
           onPressed: () => Navigator.pop(context),
         ),
         title: new Text(title),
+        actions: <Widget>[
+          new IconButton(
+            icon: new Icon(Icons.refresh),
+            onPressed: () {
+              _callUpdate();
+            }
+          )
+        ],
       ),
       body: new Center(
         child: new TabBarView(
@@ -69,16 +77,24 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: () {
-            if (sing.update.value) sing.update.value = false;
-            else sing.update.value = true;
-            // sing.updateData();
-        },
-        child: new Icon(Icons.refresh),
-      ),
+      // floatingActionButton: new FloatingActionButton(
+      //   onPressed: () {
+      //       _callSaveGames();
+      //   },
+      //   child: new Icon(Icons.save),
+      // ),
     );
   }
+
+  void _callUpdate() {
+    if (sing.update.value) sing.update.value = false;
+    else sing.update.value = true;
+  }
+
+  // void _callSaveGames() {
+  //   if (sing.saveGames.value) sing.saveGames.value = false;
+  //   else sing.saveGames.value = true;
+  // }
 
 
 }

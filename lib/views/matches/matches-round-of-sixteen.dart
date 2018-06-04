@@ -109,8 +109,12 @@ class _RoundOfSixteenState extends State<RoundOfSixteen> {
                           awayTeamId: matches["fases"][0]["jogos"][index]
                               ["escudov"],
                           date: matches["fases"][0]["jogos"][index]["datahora"],
-                          stage: "Oitavas de final")
-                      .getGameBetaCard(context);
+                          stage: Stage.roundOfSixteen,
+                          scoreHome: matches["fases"][0]["jogos"][index]["placarm_tn"],
+                          scoreAway: matches["fases"][0]["jogos"][index]["placarv_tn"],
+                          scoreHomeBet: "",
+                          scoreAwayBet: "",
+                  ).gameBetCard;
                 },
               ));
   }

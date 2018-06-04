@@ -9,6 +9,7 @@ class Singleton {
   Future<Map<String, dynamic>> _eliminationJson;
   ValueNotifier<bool> loading = new ValueNotifier<bool>(null);
   ValueNotifier<bool> update = new ValueNotifier<bool>(false);
+  ValueNotifier<bool> saveGames = new ValueNotifier<bool>(false);
   bool isGroupsLoaded = false;
   bool isEliminationLoaded = false;
 

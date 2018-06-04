@@ -49,5 +49,6 @@ class _RootPageState extends State<RootPage> {
       case AuthStatus.addInfo:
         return new AddUserInfo(title: "Completar cadastro", auth: widget.auth,);
     }
+    return Container();
   }
 }

@@ -69,20 +69,21 @@ class _SemiFinalState extends State<SemiFinal> {
         child: _isLoading
             ? new Center(child: new CircularProgressIndicator())
             : new ListView.builder(
-                itemCount: matches != null ? matches["fases"][2]["jogos"].length : 0,
+                itemCount:
+                    matches != null ? matches["fases"][2]["jogos"].length : 0,
                 itemBuilder: (BuildContext context, int index) {
                   return new GameBet(
-                          homeTeamName: matches["fases"][2]["jogos"][index]
-                              ["m_clube"],
-                          awayTeamName: matches["fases"][2]["jogos"][index]
-                              ["v_clube"],
-                          homeTeamId: matches["fases"][2]["jogos"][index]
-                              ["escudom"],
-                          awayTeamId: matches["fases"][2]["jogos"][index]
-                              ["escudov"],
-                          date: matches["fases"][2]["jogos"][index]["datahora"],
-                          stage: "Semi final")
-                      .getGameBetaCard(context);
+                    homeTeamName: matches["fases"][2]["jogos"][index]["m_clube"],
+                    awayTeamName: matches["fases"][2]["jogos"][index]["v_clube"],
+                    homeTeamId: matches["fases"][2]["jogos"][index]["escudom"],
+                    awayTeamId: matches["fases"][2]["jogos"][index]["escudov"],
+                    date: matches["fases"][2]["jogos"][index]["datahora"],
+                    stage: Stage.semiFinals,
+                    scoreHome: matches["fases"][2]["jogos"][index]["placarm_tn"],
+                    scoreAway: matches["fases"][2]["jogos"][index]["placarv_tn"],
+                    scoreHomeBet: "",
+                    scoreAwayBet: "",
+                  ).gameBetCard;
                 },
               ));
   }
