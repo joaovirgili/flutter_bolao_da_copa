@@ -132,6 +132,7 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
       child: _isLoading
           ? new Center(child: new CircularProgressIndicator())
           : new ListView.builder(
+            key: new PageStorageKey("Groups"),
               itemCount: matches != null ? matches["jogos"].length : 0,
               itemBuilder: (BuildContext context, int index) {
                 GameBetCard actualGameBetCard = new GameBet(
