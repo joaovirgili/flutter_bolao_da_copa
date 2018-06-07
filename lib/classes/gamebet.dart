@@ -248,16 +248,9 @@ class GameBetCardState extends State<GameBetCard> {
         );
         break;
       case SaveLoading.saved:
-        return new Row(
-          children: <Widget>[
-            new Container(
-                padding: const EdgeInsets.only(left: 4.0),
-                child: new Text("Saved")),
-            new IconButton(
-              icon: new Icon(Icons.check),
-              onPressed: saveCard,
-            ),
-          ],
+        return new IconButton(
+          icon: new Icon(Icons.check),
+          onPressed: saveCard,
         );
     }
     return Container();
