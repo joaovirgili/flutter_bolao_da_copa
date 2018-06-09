@@ -1,6 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-
+import 'views/matches/adminPage.dart';
 import 'views/matches/matches-geral.dart';
 import 'views/my-account.dart';
 import 'views/placar-geral.dart';
@@ -30,12 +31,20 @@ class Bolao extends StatelessWidget {
         fontFamily: 'Nunito',
       ),
       routes: <String, WidgetBuilder>{
-        "/Main": (BuildContext context) => new Main(title: appTitle, auth: auth,),
-        "/Matches": (BuildContext context) => new Matches(title: "Jogos", auth:auth),
-        "/UserProfile": (BuildContext context) => new UserProfile(title: "Minha conta", auth:auth),
-        "/Register": (BuildContext context) => new Register(title: "Cadastro", auth:auth),
+        "/Main": (BuildContext context) => new Main(
+              title: appTitle,
+              auth: auth,
+            ),
+        "/Matches": (BuildContext context) =>
+            new Matches(title: "Jogos", auth: auth),
+        "/UserProfile": (BuildContext context) =>
+            new UserProfile(title: "Minha conta", auth: auth),
+        "/Register": (BuildContext context) =>
+            new Register(title: "Cadastro", auth: auth),
         "/Login": (BuildContext context) => new Login(auth: auth),
-        "/AddInfo": (BuildContext context) => new AddUserInfo(title: "Completar cadastro", auth: auth),
+        "/AddInfo": (BuildContext context) =>
+            new AddUserInfo(title: "Completar cadastro", auth: auth),
+        "/AdminPage": (BuildContext context) => new AdminPage(),
       },
       debugShowCheckedModeBanner: false,
     );
@@ -58,18 +67,40 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
   final String title;
   final BaseAuth auth;
   String _userEmail = "", _userName = "", _userPhoto = "";
+  bool _admin = false;
+  int _score = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     new Auth().currentUser().then((user) {
-      setState(() {
-        _userEmail = user.email;
-        _userName = user.displayName == null ? "" : user.displayName;
-        _userPhoto = user.photoUrl;
+      Firestore.instance
+          .collection("users")
+          .document(user.uid)
+          .get()
+          .then((userDatabase) {
+        setState(() {
+          _admin = userDatabase.data["admin"];
+          _score = userDatabase.data["pontos"];
+          _userEmail = user.email;
+          _userName = user.displayName == null ? "" : user.displayName;
+          _userPhoto = user.photoUrl;
+        });
       });
     });
+  }
+
+  _adminPage() {
+    return new ListTile(
+      title: new Text("Admin"),
+      onTap: () => Navigator.popAndPushNamed(context, "/AdminPage"),
+      trailing: new Image.asset(
+        "assets/icons/icons-money-coins2.png",
+        width: 20.0,
+        height: 20.0,
+      ),
+    );
   }
 
   @override
@@ -118,7 +149,9 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
                 ),
               ),
               currentAccountPicture: new CircleAvatar(
-                backgroundImage: _userPhoto == null ? new AssetImage("assets/icons/icons-user2.png") : new NetworkImage(_userPhoto),
+                backgroundImage: _userPhoto == null
+                    ? new AssetImage("assets/icons/icons-user2.png")
+                    : new NetworkImage(_userPhoto),
                 backgroundColor: Theme.of(context).primaryColor,
               ),
               accountEmail: null,
@@ -155,7 +188,9 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
                       width: 20.0,
                       height: 20.0,
                     ),
-                  )
+                  ),
+                  new Divider(),
+                  this._admin !=null ? _adminPage() : Container(),
                 ],
               ),
             ),
@@ -181,6 +216,4 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
       ),
     );
   }
-
-
 }

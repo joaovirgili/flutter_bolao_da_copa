@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'matches-group-stage.dart';
-import 'matches-quarterFinals.dart';
-import 'matches-round-of-sixteen.dart';
-import 'matches-semi.dart';
-import 'matches-final.dart';
+// import 'matches-quarterFinals.dart';
+// import 'matches-round-of-sixteen.dart';
+// import 'matches-semi.dart';
+// import 'matches-final.dart';
 import '../../utils/singleton.dart';
 import '../../utils/auth.dart';
 
@@ -23,14 +23,14 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
   final String title;
   final BaseAuth auth;
 
-  var _tabController;
+  // var _tabController;
   Singleton sing;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _tabController = new TabController(vsync: this, length: 5, initialIndex: 0);
+    // _tabController = new TabCosntroller(vsync: this, length: 5, initialIndex: 0);
     sing = new Singleton();
   }
 
@@ -52,31 +52,32 @@ class _MatchesState extends State<Matches> with SingleTickerProviderStateMixin {
           )
         ],
       ),
-      body: new Center(
-        child: new TabBarView(
-          controller: _tabController,
-          children: <Widget>[
-            new GroupStageMatches(),
-            new RoundOfSixteen(),
-            new QuarterFinals(),
-            new SemiFinal(),
-            new Final(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: new Material(
-        color: Theme.of(context).primaryColor,
-        child: new TabBar(
-          controller: _tabController,
-          tabs: <Widget>[
-            new Tab(text: "Grupos"),
-            new Tab(text: "Oitavas"),
-            new Tab(text: "Quartas"),
-            new Tab(text: "Semi"),
-            new Tab(text: "Final"),
-          ],
-        ),
-      ),
+      body: new GroupStageMatches(),
+      // body: new Center(
+      //   child: new TabBarView(
+      //     controller: _tabController,
+      //     children: <Widget>[
+      //       new GroupStageMatches(),
+      //       new RoundOfSixteen(),
+      //       new QuarterFinals(),
+      //       new SemiFinal(),
+      //       new Final(),
+      //     ],
+      //   ),
+      // ),
+      // bottomNavigationBar: new Material(
+      //   color: Theme.of(context).primaryColor,
+      //   child: new TabBar(
+      //     controller: _tabController,
+      //     tabs: <Widget>[
+      //       new Tab(text: "Grupos"),
+            // new Tab(text: "Oitavas"),
+            // new Tab(text: "Quartas"),
+            // new Tab(text: "Semi"),
+            // new Tab(text: "Final"),
+      //     ],
+      //   ),
+      // ),
       // floatingActionButton: new FloatingActionButton(
       //   onPressed: () {
       //       _callSaveGames();

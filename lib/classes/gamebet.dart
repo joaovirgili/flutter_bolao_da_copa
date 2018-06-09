@@ -27,7 +27,7 @@ class GameBet {
   GameBetCard gameBetCard;
   String groupName;
 
-  // final String status;
+  bool finished;
 
   GameBet(
       {@required homeTeamName,
@@ -36,11 +36,12 @@ class GameBet {
       @required awayTeamId,
       @required date,
       @required stage,
-      @required scoreHome,
-      @required scoreAway,
+      scoreHome,
+      scoreAway,
       scoreHomeBet,
       scoreAwayBet,
-      groupName}) {
+      groupName,
+      @required finished}) {
     this.id = "$homeTeamId$awayTeamId";
     this.homeTeamName = homeTeamName;
     this.awayTeamName = awayTeamName;
@@ -53,6 +54,7 @@ class GameBet {
     this.groupName = groupName;
     scoreHomeBet != null ? this.scoreHomeBet = scoreHomeBet : null;
     scoreAwayBet != null ? this.scoreAwayBet = scoreAwayBet : null;
+    this.finished = finished;
     _generateGameBetCard();
   }
   _generateGameBetCard() {
@@ -72,7 +74,8 @@ class GameBet {
         scoreAway: this.scoreAway,
         groupName: this.groupName,
         homeTeamId: this.homeTeamId,
-        awayTeamId: this.awayTeamId);
+        awayTeamId: this.awayTeamId,
+        finished: this.finished);
   }
 }
 
@@ -94,6 +97,7 @@ class GameBetCard extends StatefulWidget {
   String homeTeamId;
   String awayTeamId;
   GameBetCardState state;
+  bool finished;
 
   GameBetCard(
       {@required id,
@@ -109,7 +113,8 @@ class GameBetCard extends StatefulWidget {
       @required awayTeamId,
       initialHomeBet,
       initialAwayBet,
-      groupName}) {
+      groupName,
+      @required finished}) {
     this.id = id;
     this.homeTeam = homeTeam;
     this.awayTeam = awayTeam;
@@ -124,6 +129,7 @@ class GameBetCard extends StatefulWidget {
     this.awayTeamId = awayTeamId;
     initialHomeBet != null ? this.initialHomeBet = initialHomeBet : null;
     initialAwayBet != null ? this.initialAwayBet = initialAwayBet : null;
+    this.finished = finished;
   }
 
   void saveBets() {
@@ -149,6 +155,7 @@ class GameBetCardState extends State<GameBetCard> {
   CollectionReference collectionReference;
   DocumentReference documentReference;
   String collection;
+  bool finalizado;
 
   @override
   void initState() {
@@ -344,8 +351,7 @@ class GameBetCardState extends State<GameBetCard> {
                                           padding: const EdgeInsets.all(0.0),
                                           child: new Text("Resultado:"),
                                         ),
-                                        new Text(
-                                            "${widget.scoreHome} - ${widget.scoreAway}")
+                                        widget.scoreHome == null ? Text("${widget.scoreHome} - ${widget.scoreAway}") : new Text("")
                                       ]))
                                 ]))),
                         new Container(
@@ -373,7 +379,7 @@ class GameBetCardState extends State<GameBetCard> {
       // padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
       child: new TextFormField(
-        enabled: widget.stage == Stage.groups ? true : false,
+        enabled: !widget.finished,
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         decoration: new InputDecoration(
