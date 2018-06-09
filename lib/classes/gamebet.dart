@@ -176,13 +176,13 @@ class GameBetCardState extends State<GameBetCard> {
     }
     new Auth().currentUser().then((user) {
       collectionReference = Firestore.instance
-          .collection(user.uid)
-          .document("jogos")
+          .collection("users")
+          .document(user.uid)
           .collection(collection);
       Firestore.instance
-          .collection(user.uid)
-          .document("jogos")
-          .collection("grupos")
+          .collection("users")
+          .document(user.uid)
+          .collection(collection)
           .document("${widget.homeTeamId}${widget.awayTeamId}")
           .get()
           .then((dataSnapshot) {
