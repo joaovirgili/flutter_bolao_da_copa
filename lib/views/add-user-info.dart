@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
@@ -60,8 +61,13 @@ class _AddUserInfoState extends State<AddUserInfo> {
     if (_image != null) {
       if (form.validate()) {
         form.save();
+        print("Fazendo upload da imagem..");
         Storage().uploadImage(_userName, _image).then((photoUri) async {
+          print("Upload completo");
           await auth.updateProfile(_userName, photoUri.toString());
+          await auth.currentUser().then((user) {
+            _insertIntoDatabase(user.uid, photoUri);
+          });
           Navigator.pop(context);
           Navigator.pushNamedAndRemoveUntil(context, "/Main", (v) => false);
         });
@@ -73,6 +79,21 @@ class _AddUserInfoState extends State<AddUserInfo> {
         duration: new Duration(seconds: 3),
       ));
     }
+  }
+
+    _insertIntoDatabase(id, photoUri) {
+    Map<String, String> data = <String, String>{
+      "photo": photoUri.toString(),
+      "username": _userName,
+    };
+    print("Inserindo dados adicionais de $id");
+    Firestore.instance
+        .collection("users")
+        .document(id)
+        .updateData(data)
+        .then((a) {
+      print("Dados inseridos no banco.");
+    });
   }
 
   @override

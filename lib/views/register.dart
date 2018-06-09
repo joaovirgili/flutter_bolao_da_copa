@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/auth.dart';
@@ -47,7 +48,11 @@ class _RegisterState extends State<Register> {
       if (_password == _passwordConfirm) {
         try {
           Singleton().showLoadingDialog(scaffoldKey.currentState.context);
-          await new Auth().createUserWithEmailAndPassword(_email, _password);
+          await new Auth()
+              .createUserWithEmailAndPassword(_email, _password)
+              .then((user) {
+            _createUserDatabase(user.uid);
+          });
           Navigator.pop(context);
           Navigator.pushNamedAndRemoveUntil(context, "/AddInfo", (v) => false);
         } catch (e) {
@@ -66,7 +71,17 @@ class _RegisterState extends State<Register> {
         ));
       }
     }
-    
+  }
+
+  _createUserDatabase(id) {
+    Map<String, dynamic> data = <String, dynamic>{
+      "email": _email,
+      "pontos": 0,
+    };
+    print("Criando o banco do usuário $id");
+    Firestore.instance.collection("users").document(id).setData(data).then((a) {
+      print("Banco criado");
+    });
   }
 
   @override
