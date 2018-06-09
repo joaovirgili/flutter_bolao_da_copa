@@ -18,11 +18,8 @@ class GameBet {
   String homeTeamId;
   String awayTeamId;
 
-  // final int scoreHomeTeam;
-  // final int scoreAwayTeam;
-
   String scoreHomeBet, scoreAwayBet;
-  String scoreHome, scoreAway;
+  int scoreHome, scoreAway;
 
   GameBetCard gameBetCard;
   String groupName;
@@ -30,7 +27,8 @@ class GameBet {
   bool finished;
 
   GameBet(
-      {@required homeTeamName,
+      {@required id,
+      @required homeTeamName,
       @required awayTeamName,
       @required homeTeamId,
       @required awayTeamId,
@@ -38,11 +36,11 @@ class GameBet {
       @required stage,
       scoreHome,
       scoreAway,
-      scoreHomeBet,
-      scoreAwayBet,
+      @required scoreHomeBet,
+      @required scoreAwayBet,
       groupName,
       @required finished}) {
-    this.id = "$homeTeamId$awayTeamId";
+    this.id = id;
     this.homeTeamName = homeTeamName;
     this.awayTeamName = awayTeamName;
     this.homeTeamId = homeTeamId;
@@ -91,8 +89,8 @@ class GameBetCard extends StatefulWidget {
   String awayBet;
   String initialHomeBet;
   String initialAwayBet;
-  String scoreHome;
-  String scoreAway;
+  int scoreHome;
+  int scoreAway;
   String groupName;
   String homeTeamId;
   String awayTeamId;
@@ -111,8 +109,8 @@ class GameBetCard extends StatefulWidget {
       @required scoreAway,
       @required homeTeamId,
       @required awayTeamId,
-      initialHomeBet,
-      initialAwayBet,
+      @required initialHomeBet,
+      @required initialAwayBet,
       groupName,
       @required finished}) {
     this.id = id;
@@ -134,7 +132,6 @@ class GameBetCard extends StatefulWidget {
 
   void saveBets() {
     this.state.saveBets();
-    // print(this.homeBet);
   }
 
   @override
@@ -148,14 +145,11 @@ enum SaveLoading { saved, notSaved, saving }
 
 class GameBetCardState extends State<GameBetCard> {
   String homeBet, awayBet;
-  String homeBetFromDatabase, awayBetFromDatabase;
   bool betFromDatabase = false;
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
   SaveLoading _saveLoading = SaveLoading.notSaved;
   CollectionReference collectionReference;
-  DocumentReference documentReference;
   String collection;
-  bool finalizado;
 
   @override
   void initState() {
@@ -186,27 +180,22 @@ class GameBetCardState extends State<GameBetCard> {
           .collection("users")
           .document(user.uid)
           .collection(collection);
-      Firestore.instance
-          .collection("users")
-          .document(user.uid)
-          .collection(collection)
-          .document("${widget.homeTeamId}${widget.awayTeamId}")
-          .get()
-          .then((dataSnapshot) {
-        if (dataSnapshot.exists && dataSnapshot.data != null) {
-          setState(() {
-            this.betFromDatabase = true;
-            this.homeBetFromDatabase = dataSnapshot.data["casa"];
-            this.awayBetFromDatabase = dataSnapshot.data["fora"];
-            print(homeBetFromDatabase);
-          });
-        } else {
-          print("Sem dados.");
-          setState(() {
-            this.betFromDatabase = true;
-          });
-        }
-      });
+      // collectionReference
+      //     .document(widget.id)
+      //     .get()
+      //     .then((dataSnapshot) {
+      //   if (dataSnapshot.exists && dataSnapshot.data != null) {
+      //     setState(() {
+      //       this.betFromDatabase = true;
+      //       this.homeBetFromDatabase = dataSnapshot.data["casa"];
+      //       this.awayBetFromDatabase = dataSnapshot.data["fora"];
+      //     });
+      //   } else {
+      //     setState(() {
+      //       this.betFromDatabase = true;
+      //     });
+      //   }
+      // });
     });
   }
 
@@ -332,16 +321,12 @@ class GameBetCardState extends State<GameBetCard> {
                                 child: new Column(children: <Widget>[
                                   new Row(
                                     children: <Widget>[
-                                      this.betFromDatabase
-                                          ? _homeFormField(homeBetFromDatabase)
-                                          : CircularProgressIndicator(),
+                                      _homeFormField(widget.initialHomeBet),
                                       new Container(
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 5.0),
                                           child: new Text("X")),
-                                      this.betFromDatabase
-                                          ? _awayFormField(awayBetFromDatabase)
-                                          : CircularProgressIndicator(),
+                                      _awayFormField(widget.initialAwayBet),
                                     ],
                                   ),
                                   new Padding(
@@ -351,7 +336,7 @@ class GameBetCardState extends State<GameBetCard> {
                                           padding: const EdgeInsets.all(0.0),
                                           child: new Text("Resultado:"),
                                         ),
-                                        widget.scoreHome == null ? Text("${widget.scoreHome} - ${widget.scoreAway}") : new Text("")
+                                        widget.scoreHome != -1 ? Text("${widget.scoreHome.toString()} - ${widget.scoreAway.toString()}") : new Text("-")
                                       ]))
                                 ]))),
                         new Container(
@@ -398,10 +383,9 @@ class GameBetCardState extends State<GameBetCard> {
   Widget _awayFormField(initialValue) {
     return new Container(
       width: 45.0,
-      // padding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 0.0),
       margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 0.0),
       child: new TextFormField(
-        enabled: widget.stage == Stage.groups ? true : false,
+        enabled: !widget.finished,
         keyboardType: TextInputType.number,
         textAlign: TextAlign.center,
         decoration: new InputDecoration(

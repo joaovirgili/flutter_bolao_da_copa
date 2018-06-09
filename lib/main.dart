@@ -144,7 +144,7 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    new Text("0 pontos") //user scores
+                    new Text("$_score pontos") //user scores
                   ],
                 ),
               ),
