@@ -98,11 +98,7 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
     return new ListTile(
       title: new Text("Admin"),
       onTap: () => Navigator.popAndPushNamed(context, "/AdminPage"),
-      trailing: new Image.asset(
-        "assets/icons/icons-money-coins2.png",
-        width: 20.0,
-        height: 20.0,
-      ),
+      
     );
   }
 

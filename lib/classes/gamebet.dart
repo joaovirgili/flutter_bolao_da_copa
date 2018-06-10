@@ -233,21 +233,23 @@ class GameBetCardState extends State<GameBetCard> {
   }
 
   Widget _cardTrailing() {
-    switch (_saveLoading) {
-      case SaveLoading.saving:
-        return new CircularProgressIndicator();
-        break;
-      case SaveLoading.notSaved:
-        return new IconButton(
-          icon: new Icon(Icons.save),
-          onPressed: saveCard,
-        );
-        break;
-      case SaveLoading.saved:
-        return new IconButton(
-          icon: new Icon(Icons.check),
-          onPressed: saveCard,
-        );
+    if (!widget.finished) {
+      switch (_saveLoading) {
+        case SaveLoading.saving:
+          return new CircularProgressIndicator();
+          break;
+        case SaveLoading.notSaved:
+          return new IconButton(
+            icon: new Icon(Icons.save),
+            onPressed: saveCard,
+          );
+          break;
+        case SaveLoading.saved:
+          return new IconButton(
+            icon: new Icon(Icons.check),
+            onPressed: saveCard,
+          );
+      }
     }
     return Container();
   }
@@ -336,7 +338,10 @@ class GameBetCardState extends State<GameBetCard> {
                                           padding: const EdgeInsets.all(0.0),
                                           child: new Text("Resultado:"),
                                         ),
-                                        widget.scoreHome != -1 ? Text("${widget.scoreHome.toString()} - ${widget.scoreAway.toString()}") : new Text("-")
+                                        widget.scoreHome != -1
+                                            ? Text(
+                                                "${widget.scoreHome.toString()} - ${widget.scoreAway.toString()}")
+                                            : new Text("-")
                                       ]))
                                 ]))),
                         new Container(

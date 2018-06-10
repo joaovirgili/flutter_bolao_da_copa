@@ -1,8 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bolao/classes/gamebet.dart';
 import '../../utils/singleton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../utils/auth.dart';
+import 'package:intl/intl.dart';
+
 
 class GroupStageMatches extends StatefulWidget {
   @override
@@ -22,7 +26,7 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
     // TODO: implement initState
     super.initState();
     sing = new Singleton();
-    // _userBets = new List<Map<String, String>>();
+    // _userBets = new List<Map<String, String>>()
     new Auth().currentUser().then((user) {
       collectionReference = Firestore.instance
           .collection(user.uid)
@@ -69,14 +73,21 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
                 awayBet = sing.getUsersBet().elementAt(i)["fora"];
               }
             }
+            var formatter = new DateFormat('dd/MM HH:mm');
+            DateTime today = DateTime.now();
+            DateTime matchDateTime = DateTime.parse(actualMatch["datahora"]); 
+            Duration duration = matchDateTime.difference(today);
+            if (duration.inMinutes <= 60 && !actualMatch["finalizado"]) {
+              updateMatch(actualMatch["id"]);
+            }
             return new GameBet(
               id: "${index.toString().padLeft(2, '0')}${actualMatch["id_clubem"]}${actualMatch["id_clubev"]}",
               awayTeamId: actualMatch["id_clubev"],
               awayTeamName: actualMatch["v_clube"],
               homeTeamId: actualMatch["id_clubem"],
               homeTeamName: actualMatch["m_clube"],
-              date: "${actualMatch["data"]} ${actualMatch["hora"]}",
-              finished: actualMatch["finalizado"],
+              date: formatter.format(matchDateTime),
+              finished: duration.inMinutes <= 60 ? true : false,
               stage: Stage.groups,
               groupName: actualMatch["nome_grupo"],
               scoreHomeBet: homeBet,
@@ -88,6 +99,13 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
         );
       },
     );
+  }
+
+  Future updateMatch(id) async {
+    Map<String, bool> data = <String, bool> {
+      "finalizado": true
+    };
+    await Firestore.instance.collection("grupos").document(id).updateData(data);
   }
 
   @override
