@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'utils/singleton.dart';
 import 'views/matches/adminPage.dart';
 import 'views/matches/matches-geral.dart';
 import 'views/my-account.dart';
@@ -64,25 +65,27 @@ class Main extends StatefulWidget {
 
 class _MainState extends State<Main> with SingleTickerProviderStateMixin {
   _MainState({this.title, this.auth});
+  GlobalKey<ScaffoldState> scaffoldKey = new GlobalKey<ScaffoldState>();
   final String title;
   final BaseAuth auth;
-  String _userEmail = "", _userName = "", _userPhoto = "";
+  String _userEmail = "", _userName = "", _userPhoto = "", _id = "";
   bool _admin = false;
-  int _score = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     new Auth().currentUser().then((user) {
+      new Singleton().getUsersBetFromDatabase(user.uid);
+      // new Singleton().calculateUserScore();
       Firestore.instance
           .collection("users")
           .document(user.uid)
           .get()
           .then((userDatabase) {
         setState(() {
+          _id = user.uid;
           _admin = userDatabase.data["admin"];
-          _score = userDatabase.data["pontos"];
           _userEmail = user.email;
           _userName = user.displayName == null ? "" : user.displayName;
           _userPhoto = user.photoUrl;
@@ -106,20 +109,20 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
+      key: scaffoldKey,
       appBar: new AppBar(
         title: new Text(title),
         actions: <Widget>[
-          new FlatButton(
+          new IconButton(
+            icon: new Icon(Icons.refresh),
             onPressed: () {
-              new Auth().signOut();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, "/Login", (v) => false);
-            },
-            child: new Text(
-              "Logout",
-              style: new TextStyle(color: Colors.white),
-            ),
-          ),
+              scaffoldKey.currentState.showSnackBar(new SnackBar(
+                content: new Text("Atualizando pontuação..."),
+                duration: new Duration(seconds: 3),
+              ));
+              new Singleton().calculateUserScore();
+            }
+          )
         ],
       ),
       body: new PlacarGeral(),
@@ -144,7 +147,14 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
                         ],
                       ),
                     ),
-                    new Text("$_score pontos") //user scores
+                    // new Text("$_score pontos") //user scores
+                    StreamBuilder(
+                      stream: Firestore.instance.collection("users").document(_id).snapshots(),
+                      builder:(context, snapshot) {
+                        if (!snapshot.hasData) return Center(child: CircularProgressIndicator(),);
+                        return new Text("${snapshot.data["pontos"].toString()} pontos");
+                      } ,
+                    ),
                   ],
                 ),
               ),
@@ -199,6 +209,7 @@ class _MainState extends State<Main> with SingleTickerProviderStateMixin {
               child: new RawMaterialButton(
                 onPressed: () {
                   new Auth().signOut();
+                  new Singleton().clearUserBets();
                   Navigator.pushNamedAndRemoveUntil(
                       context, "/Login", (v) => false);
                 },

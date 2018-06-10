@@ -28,6 +28,7 @@ class _LoginState extends State<Login> {
       form.save();
       try {
         await auth.signInWithEmailAndPassword(_email, _password);
+        new Singleton().calculateUserScore();
           Navigator.pop(context);
         auth.currentUser().then((user) {
           if (user.displayName == null) {

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -12,22 +13,128 @@ class Singleton {
   ValueNotifier<bool> saveGames = new ValueNotifier<bool>(false);
   bool isGroupsLoaded = false;
   bool isEliminationLoaded = false;
+  List<Map<String, String>> _userBets = new List<Map<String, String>>();
 
   factory Singleton() {
     return _singleton;
   }
 
-  Singleton._internal() {
-    // updateData();
+  Singleton._internal(){} 
+
+  getUsersBet() {
+    return this._userBets;
   }
 
-  // updateData() async {
-  //   this.loading.value = true;
-  //   _groupsJson = this.getJson("http://www.srgoool.com.br/call?ajax=get_classificacao2&id_fase=1796");
-  //   _eliminationJson = this.getJson("http://www.srgoool.com.br/call?ajax=get_chaves&id_ano_campeonato=434");
-  //   this.loading.value = false;
-  //   print("loading false");
-  // }
+  clearUserBets() {
+    this._userBets = new List<Map<String, String>>();
+  }
+
+  calculateUserScore() async {
+    print("Calculando pontuações...");
+    List<String> userIds = new List<String>();
+    List<Map<String, dynamic>> games = new List<Map<String, dynamic>>();
+    List<Map<String, dynamic>> usersBet = new List<Map<String, dynamic>>();
+    Map<String, int> usersFinalScore = new Map<String, int>();
+
+    //get users' id
+    print("Buscando id dos usuarios...");
+    await Firestore.instance.collection("users").getDocuments().then((docs) {
+      print("Busca de id finalizada.");
+      for (var i = 0; i < docs.documents.length; i++) {
+        userIds.add(docs.documents[i].documentID);
+      }
+    });
+
+    //get users bets
+    print("Buscando aposta de cada usuario...");
+    for (var i = 0; i < userIds.length; i++) {
+      print("Buscando pela aposta do usuario $i...");
+      await Firestore.instance
+          .collection("users")
+          .document(userIds.elementAt(i))
+          .collection("grupos")
+          .getDocuments()
+          .then((bet) {
+        print("Busca pela aposta do usuario $i finalizada.");
+        for (var j = 0; j < bet.documents.length; j++) {
+          Map<String, dynamic> data = new Map<String, dynamic>();
+          data["game_id"] = bet.documents[j].documentID;
+          data["user_id"] = userIds.elementAt(i);
+          data["casa"] = bet.documents[j].data["casa"];
+          data["fora"] = bet.documents[j].data["fora"];
+          usersBet.add(data);
+          data = null;
+        }
+      });
+    }
+    print("Busca aposta de cada usuario finalizada");
+
+    print("Buscando pelo resultado dos jogos...");
+    //get the matches in database
+    await Firestore.instance.collection("grupos").getDocuments().then((doc) {
+      print("Busca pelo resultado dos jogos finalizada");
+      for (var i = 0; i < doc.documents.length; i++) {
+        if (doc.documents[i].data["placarm_tn"] != -1) {
+          Map<String, dynamic> data = new Map<String, dynamic>();
+          data["id"] = doc.documents[i].documentID;
+          data["placarm_tn"] = doc.documents[i].data["placarm_tn"];
+          data["placarv_tn"] = doc.documents[i].data["placarv_tn"];
+          games.add(data);
+          data = null;
+        }
+      }
+    });
+
+    //calc score for each user
+    for (int j = 0; j < usersBet.length; j++) {
+      int betHome = int.parse(usersBet[j]["casa"]);
+      int betAway = int.parse(usersBet[j]["fora"]);
+      String gameId = usersBet[j]["game_id"];
+      String userId = usersBet[j]["user_id"];
+      for (int i = 0; i < games.length; i++) {
+        int scoreHome = games[i]["placarm_tn"];
+        int scoreAway = games[i]["placarv_tn"];
+        if (games[i]["id"] == gameId) {
+          int score = 0;
+          if (scoreHome > scoreAway && betHome > betAway) { //home wins
+            score = (scoreHome == betHome && scoreAway == betAway) ? 5 : 3;
+          } else if (scoreHome < scoreAway && betHome < betAway) { //away wins
+            score = (scoreHome == betHome && scoreAway == betAway) ? 5 : 3;
+          } else if (scoreHome == scoreAway && betHome == betAway) { //draw
+            score = (scoreHome == betHome && scoreAway == betAway) ? 5 : 3;
+          }
+          usersFinalScore[userId] = usersFinalScore[userId] == null ? score : usersFinalScore[userId]+score;
+        }
+      }
+    }
+    print(usersFinalScore);
+    //update database
+    for (var i=0;i<usersFinalScore.keys.length;i++) {
+      var userId = usersFinalScore.keys.elementAt(i);
+      Map<String, int> data = new Map<String, int>();
+      data["pontos"] = usersFinalScore[userId];
+      Firestore.instance.collection("users").document(usersFinalScore.keys.elementAt(i)).updateData(data);
+    }
+    print("Pontuações calculadas.");
+  }
+
+  Future getUsersBetFromDatabase(id) async {
+    var teste = await Firestore.instance
+        .collection("users")
+        .document(id)
+        .collection("grupos")
+        .getDocuments();
+
+    for (var i = 0; i < teste.documents.length; i++) {
+      Map<String, String> data = new Map<String, String>();
+      data["id"] = teste.documents[i].documentID;
+      data["casa"] = teste.documents[i]["casa"];
+      data["fora"] = teste.documents[i]["fora"];
+
+      this._userBets.add(data);
+      data = null;
+    }
+  }
 
   showLoadingDialog(BuildContext context) {
     showDialog(

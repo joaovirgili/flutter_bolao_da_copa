@@ -15,20 +15,28 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
   var bets;
   Singleton sing;
   CollectionReference collectionReference;
-  List<Map<String, String>> _userBets;
+  // List<Map<String, String>> _userBets;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     sing = new Singleton();
-    _userBets = new List<Map<String, String>>();
+    // _userBets = new List<Map<String, String>>();
     new Auth().currentUser().then((user) {
       collectionReference = Firestore.instance
           .collection(user.uid)
           .document("jogos")
           .collection("grupos");
-      getBets(user.uid);
+      sing.getUsersBetFromDatabase(user.uid).then((e) {
+        if (this.mounted) {
+          setState(() {
+            _isLoading = false;
+          });
+        }
+        print("bets atualizadas");
+      });
+      // await sing.getUsersBetFromDatabase(user.uid);
     });
     // sing.update.addListener(sing.updateGroupsJson);
     // sing.loading.addListener(_setLoading);
@@ -41,71 +49,45 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
     // _getJson();
   }
 
-  getBets(id) async {
-    var teste = await Firestore.instance
-        .collection("users")
-        .document(id)
-        .collection("grupos")
-        .getDocuments();
-
-    for (var i = 0; i < teste.documents.length; i++) {
-      Map<String, String> data = new Map<String, String>();
-      data["id"] = teste.documents[i].documentID;
-      data["casa"] = teste.documents[i]["casa"];
-      data["fora"] = teste.documents[i]["fora"];
-      _userBets.add(data);
-      data = null;
-    }
-    setState(() {
-        _isLoading = false;
-      });
-  }
-
   @override
   Widget build(BuildContext contex) {
-    return _isLoading
-        ? new Center(
-            child: new CircularProgressIndicator(),
-          )
-        : new StreamBuilder(
-            stream: Firestore.instance.collection("grupos").snapshots(),
-            builder: (context, snapshot) {
-              if (!snapshot.hasData)
-                return new Center(child: CircularProgressIndicator());
-              return new ListView.builder(
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) {
-                  var actualMatch = snapshot.data.documents[index];
-                  final matchId = "${index.toString().padLeft(2, '0')}${actualMatch["id_clubem"]}${actualMatch["id_clubev"]}";
-                  var homeBet, awayBet;
-                  for (var i=0;i<_userBets.length;i++) {
-                    if (_userBets.elementAt(i)["id"] == matchId) {
-                      homeBet = _userBets.elementAt(i)["casa"];
-                      awayBet = _userBets.elementAt(i)["fora"];
-                    }
-                  }
-                  return new GameBet(
-                          id: "${index.toString().padLeft(2, '0')}${actualMatch["id_clubem"]}${actualMatch["id_clubev"]}",
-                          awayTeamId: actualMatch["id_clubev"],
-                          awayTeamName: actualMatch["v_clube"],
-                          homeTeamId: actualMatch["id_clubem"],
-                          homeTeamName: actualMatch["m_clube"],
-                          date: "${actualMatch["data"]} ${actualMatch["hora"]}",
-                          finished: actualMatch["finalizado"],
-                          stage: Stage.groups,
-                          groupName: actualMatch["nome_grupo"],
-                          scoreHomeBet: homeBet,
-                          scoreAwayBet: awayBet,
-                          scoreHome: actualMatch["placarm_tn"],
-                          scoreAway: actualMatch["placarv_tn"],
-                          )
-                      .gameBetCard;
-                },
-              );
-              // print(snapshot.data.documents.length);
-              // return new Container();
-            },
-          );
+    return _isLoading ? Center(child: CircularProgressIndicator(),) : StreamBuilder(
+      stream: Firestore.instance.collection("grupos").snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData)
+          return new Center(child: CircularProgressIndicator());
+        return new ListView.builder(
+          itemCount: snapshot.data.documents.length,
+          itemBuilder: (context, index) {
+            var actualMatch = snapshot.data.documents[index];
+            final matchId =
+                "${index.toString().padLeft(2, '0')}${actualMatch["id_clubem"]}${actualMatch["id_clubev"]}";
+            var homeBet, awayBet;
+            for (var i = 0; i < sing.getUsersBet().length; i++) {
+              if (sing.getUsersBet().elementAt(i)["id"] == matchId) {
+                homeBet = sing.getUsersBet().elementAt(i)["casa"];
+                awayBet = sing.getUsersBet().elementAt(i)["fora"];
+              }
+            }
+            return new GameBet(
+              id: "${index.toString().padLeft(2, '0')}${actualMatch["id_clubem"]}${actualMatch["id_clubev"]}",
+              awayTeamId: actualMatch["id_clubev"],
+              awayTeamName: actualMatch["v_clube"],
+              homeTeamId: actualMatch["id_clubem"],
+              homeTeamName: actualMatch["m_clube"],
+              date: "${actualMatch["data"]} ${actualMatch["hora"]}",
+              finished: actualMatch["finalizado"],
+              stage: Stage.groups,
+              groupName: actualMatch["nome_grupo"],
+              scoreHomeBet: homeBet,
+              scoreAwayBet: awayBet,
+              scoreHome: actualMatch["placarm_tn"],
+              scoreAway: actualMatch["placarv_tn"],
+            ).gameBetCard;
+          },
+        );
+      },
+    );
   }
 
   @override
