@@ -19,7 +19,7 @@ class Singleton {
     return _singleton;
   }
 
-  Singleton._internal(){} 
+  Singleton._internal() {}
 
   getUsersBet() {
     return this._userBets;
@@ -97,23 +97,34 @@ class Singleton {
         if (games[i]["id"] == gameId) {
           int score = 0;
           if (scoreHome > scoreAway && betHome > betAway) { //home wins
-            score = (scoreHome == betHome && scoreAway == betAway) ? 5 : 3;
+            score = 2;
+            if (scoreHome == betHome && betAway == scoreAway)
+              score += 3;
+            else if (scoreHome == betHome && betAway != scoreAway) score += 1;
           } else if (scoreHome < scoreAway && betHome < betAway) { //away wins
-            score = (scoreHome == betHome && scoreAway == betAway) ? 5 : 3;
+            score = 2;
+            if (scoreHome == betHome && betAway == scoreAway)
+              score += 3;
+            else if (scoreAway == betAway && scoreHome != betHome) score += 1;
           } else if (scoreHome == scoreAway && betHome == betAway) { //draw
-            score = (scoreHome == betHome && scoreAway == betAway) ? 5 : 3;
+            score = (scoreHome == betHome && scoreAway == betAway) ? 5 : 2;
           }
-          usersFinalScore[userId] = usersFinalScore[userId] == null ? score : usersFinalScore[userId]+score;
+          usersFinalScore[userId] = usersFinalScore[userId] == null
+              ? score
+              : usersFinalScore[userId] + score;
         }
       }
     }
     print(usersFinalScore);
     //update database
-    for (var i=0;i<usersFinalScore.keys.length;i++) {
+    for (var i = 0; i < usersFinalScore.keys.length; i++) {
       var userId = usersFinalScore.keys.elementAt(i);
       Map<String, int> data = new Map<String, int>();
       data["pontos"] = usersFinalScore[userId];
-      Firestore.instance.collection("users").document(usersFinalScore.keys.elementAt(i)).updateData(data);
+      Firestore.instance
+          .collection("users")
+          .document(usersFinalScore.keys.elementAt(i))
+          .updateData(data);
     }
     print("Pontuações calculadas.");
   }
