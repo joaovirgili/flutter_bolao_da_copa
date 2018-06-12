@@ -39,7 +39,7 @@ class Auth implements BaseAuth {
   updateProfile(String email, String photo) async {
     UserUpdateInfo updateInfo = new UserUpdateInfo();
     updateInfo.displayName = email;
-    updateInfo.photoUrl = photo;
+    if (photo != null) updateInfo.photoUrl = photo;
     await _firebaseAuth.updateProfile(updateInfo);
   }
 

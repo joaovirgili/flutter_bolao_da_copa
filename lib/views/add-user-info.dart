@@ -33,11 +33,17 @@ class _AddUserInfoState extends State<AddUserInfo> {
   File _image;
   ScrollController _scrollController = new ScrollController();
   FocusNode _focus = new FocusNode();
+  // String _userNameLoggedIn;
 
   @override
   initState() {
     super.initState();
     _focus.addListener(_onFocusChange);
+    auth.currentUser().then((user) {
+      setState(() {
+        _userName = user.displayName;
+      });
+    });
   }
 
   _onFocusChange() {
@@ -57,33 +63,44 @@ class _AddUserInfoState extends State<AddUserInfo> {
   }
 
   saveInfo() async {
-    var form = formKey.currentState;
-    if (_image != null) {
+    if (_userName != null) {
+        _image != null ? _insertWithImage() : _insertWithouImage();
+    } else {
+      var form = formKey.currentState;
       if (form.validate()) {
         form.save();
-        print("Fazendo upload da imagem..");
-        Storage().uploadImage(_userName, _image).then((photoUri) async {
-          print("Upload completo");
-          await auth.updateProfile(_userName, photoUri.toString());
-          await auth.currentUser().then((user) {
-            _insertIntoDatabase(user.uid, photoUri);
-          });
-          Navigator.pop(context);
-          Navigator.pushNamedAndRemoveUntil(context, "/Main", (v) => false);
-        });
+        _image != null ? _insertWithImage() : _insertWithouImage();
       }
-    } else {
-      Navigator.pop(context);
-      scaffoldKey.currentState.showSnackBar(new SnackBar(
-        content: new Text("Selecione uma foto de perfil."),
-        duration: new Duration(seconds: 3),
-      ));
     }
   }
 
-    _insertIntoDatabase(id, photoUri) {
+  _insertWithouImage() async {
+    new Singleton().showLoadingDialog(scaffoldKey.currentContext);
+    await auth.updateProfile(_userName, null);
+    await auth.currentUser().then((user) {
+      _insertIntoDatabase(user.uid, null);
+    });
+    Navigator.pop(context);
+    Navigator.pushNamedAndRemoveUntil(context, "/Main", (v) => false);
+  }
+
+  _insertWithImage() {
+    print("Fazendo upload da imagem..");
+    new Singleton().showLoadingDialog(scaffoldKey.currentContext);
+    Storage().uploadImage(_userName, _image).then((photoUri) async {
+      print("Upload completo");
+      await auth.updateProfile(_userName, photoUri.toString());
+      await auth.currentUser().then((user) {
+        _insertIntoDatabase(user.uid, photoUri);
+      });
+      Navigator.pop(context);
+      Navigator.pushNamedAndRemoveUntil(context, "/Main", (v) => false);
+    });
+  }
+
+  _insertIntoDatabase(id, photoUri) {
     Map<String, String> data = <String, String>{
-      "photo": photoUri.toString(),
+      "photo": photoUri != null ? photoUri.toString() : null,
       "username": _userName,
     };
     print("Inserindo dados adicionais de $id");
@@ -120,7 +137,6 @@ class _AddUserInfoState extends State<AddUserInfo> {
                   child: MaterialButton(
                     height: 42.0,
                     onPressed: () {
-                      new Singleton().showLoadingDialog(context);
                       saveInfo();
                     },
                     color: Theme.of(context).primaryColor,
@@ -131,26 +147,28 @@ class _AddUserInfoState extends State<AddUserInfo> {
                   ),
                 ),
               ),
-              new Padding(
-                padding: const EdgeInsets.fromLTRB(32.0, 12.0, 32.0, 0.0),
-                child: Form(
-                  key: formKey,
-                  child: new TextFormField(
-                    focusNode: _focus,
-                    autofocus: false,
-                    decoration: InputDecoration(
-                        hintText: "Como gostaria de ser chamado?",
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(32.0))),
-                    validator: (value) => value.isEmpty
-                        ? "Este campo precisa ser preenchido"
-                        : null,
-                    onSaved: (value) => this._userName = value,
-                  ),
-                ),
-              ),
+              _userName != null
+                  ? Container()
+                  : new Padding(
+                      padding: const EdgeInsets.fromLTRB(32.0, 12.0, 32.0, 0.0),
+                      child: Form(
+                        key: formKey,
+                        child: new TextFormField(
+                          focusNode: _focus,
+                          autofocus: false,
+                          decoration: InputDecoration(
+                              hintText: "Como gostaria de ser chamado?",
+                              contentPadding: const EdgeInsets.fromLTRB(
+                                  20.0, 10.0, 20.0, 10.0),
+                              border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(32.0))),
+                          validator: (value) => value.isEmpty
+                              ? "Este campo precisa ser preenchido"
+                              : null,
+                          onSaved: (value) => this._userName = value,
+                        ),
+                      ),
+                    ),
               new Center(
                 child: InkWell(
                   onTap: () => showDialog(

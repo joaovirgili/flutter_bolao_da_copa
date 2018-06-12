@@ -35,20 +35,24 @@ class PlacarGeralState extends State<PlacarGeral> {
             return new Column(
               children: <Widget>[
                 new ListTile(
-                  title: new Text(user["username"] != null ? user["username"] : user["email"]),
+                  title: new Text(user["username"] != null
+                      ? user["username"]
+                      : user["email"]),
                   subtitle: new Text("${user["pontos"].toString()} pontos"),
                   trailing: _rankingTrailing(index),
-                  leading: new Container(
-                      width: 48.0,
-                      height: 48.0,
-                      decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: new DecorationImage(
-                              fit: BoxFit.fill,
-                              image: user["photo"] != null
-                                  ? new NetworkImage(user["photo"])
-                                  : new AssetImage(
-                                      "assets/icons/icons-user.png")))),
+                  // leading: new Container(
+                  //     width: 48.0,
+                  //     height: 48.0,
+                  //     decoration: new BoxDecoration(
+                  //       shape: BoxShape.circle,
+                  //       image: new DecorationImage(
+                  //           fit: BoxFit.fill,
+                  //           image: user["photo"] != null
+                  //               ? new NetworkImage(user["photo"])
+                  //               : new AssetImage(
+                  //                   "assets/icons/icons-user.png")),
+                  //     )),
+                  leading: new CircleAvatar(backgroundImage:user["photo"] != null ? new NetworkImage(user["photo"]) : new AssetImage("assets/icons/icons-user2.png"),),
                 ),
                 new Divider(),
               ],
@@ -68,6 +72,12 @@ class PlacarGeralState extends State<PlacarGeral> {
     } else if (index == 2) {
       image = "assets/icons/icons-medal-3.png";
     }
-    return image == "" ? null : new Image.asset(image, width: 32.0, height: 32.0,);
+    return image == ""
+        ? null
+        : new Image.asset(
+            image,
+            width: 32.0,
+            height: 32.0,
+          );
   }
 }

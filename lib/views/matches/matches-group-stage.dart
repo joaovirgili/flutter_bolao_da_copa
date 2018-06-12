@@ -74,12 +74,19 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
               }
             }
             var formatter = new DateFormat('dd/MM HH:mm');
+            var lastDayToBet = DateTime.parse("2018-06-15 08:00:00");
             DateTime today = DateTime.now();
             DateTime matchDateTime = DateTime.parse(actualMatch["datahora"]); 
             Duration duration = matchDateTime.difference(today);
-            if (duration.inMinutes <= 60 && !actualMatch["finalizado"]) {
-              updateMatch(actualMatch["id"]);
+            // if (matchId == "03227231" || matchId == "02243483" || matchId == "00454478" || matchId == "01242204") {
+            if (matchId == "00454478") {
+              if (duration.inMinutes <= 60 && !actualMatch["finalizado"]) {
+                setMatchBetFinished(actualMatch["id"]);
+              }
+            } else if (DateTime.now().difference(lastDayToBet).inMinutes >= 0) {
+              if (!actualMatch["finalizado"]) setMatchBetFinished(actualMatch["id"]);
             }
+            
             return new GameBet(
               id: "${index.toString().padLeft(2, '0')}${actualMatch["id_clubem"]}${actualMatch["id_clubev"]}",
               awayTeamId: actualMatch["id_clubev"],
@@ -101,7 +108,7 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
     );
   }
 
-  Future updateMatch(id) async {
+  Future setMatchBetFinished(id) async {
     Map<String, bool> data = <String, bool> {
       "finalizado": true
     };

@@ -31,7 +31,7 @@ class _LoginState extends State<Login> {
         new Singleton().calculateUserScore();
           Navigator.pop(context);
         auth.currentUser().then((user) {
-          if (user.displayName == null) {
+          if (user.displayName == null || user.photoUrl == null) {
             Navigator.pushNamedAndRemoveUntil(
                 context, "/AddInfo", (v) => false);
           } else {
