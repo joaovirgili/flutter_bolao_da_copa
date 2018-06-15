@@ -94,7 +94,7 @@ class _GroupStageMatchesState extends State<GroupStageMatches> {
               homeTeamId: actualMatch["id_clubem"],
               homeTeamName: actualMatch["m_clube"],
               date: formatter.format(matchDateTime),
-              finished: duration.inMinutes <= 60 ? true : false,
+              finished: actualMatch["finalizado"],
               stage: Stage.groups,
               groupName: actualMatch["nome_grupo"],
               scoreHomeBet: homeBet,

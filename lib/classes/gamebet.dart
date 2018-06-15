@@ -251,7 +251,7 @@ class GameBetCardState extends State<GameBetCard> {
           );
       }
     }
-    return Container();
+    return Text("");
   }
 
   Text _stageText(stage) {
