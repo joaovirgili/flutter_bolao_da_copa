@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'userBet.dart';
 
 class PlacarGeral extends StatefulWidget {
   @override
@@ -35,23 +36,13 @@ class PlacarGeralState extends State<PlacarGeral> {
             return new Column(
               children: <Widget>[
                 new ListTile(
+                  onTap: () {
+                    Navigator.push(context, new MaterialPageRoute(builder: (context) => new UserBet(user.documentID, user["username"])));},
                   title: new Text(user["username"] != null
                       ? user["username"]
                       : user["email"]),
                   subtitle: new Text("${user["pontos"].toString()} pontos"),
                   trailing: _rankingTrailing(index),
-                  // leading: new Container(
-                  //     width: 48.0,
-                  //     height: 48.0,
-                  //     decoration: new BoxDecoration(
-                  //       shape: BoxShape.circle,
-                  //       image: new DecorationImage(
-                  //           fit: BoxFit.fill,
-                  //           image: user["photo"] != null
-                  //               ? new NetworkImage(user["photo"])
-                  //               : new AssetImage(
-                  //                   "assets/icons/icons-user.png")),
-                  //     )),
                   leading: new CircleAvatar(backgroundImage:user["photo"] != null ? new NetworkImage(user["photo"]) : new AssetImage("assets/icons/icons-user2.png"),),
                 ),
                 new Divider(),
