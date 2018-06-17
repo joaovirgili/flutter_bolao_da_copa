@@ -96,19 +96,19 @@ class Singleton {
         int scoreAway = games[i]["placarv_tn"];
         if (games[i]["id"] == gameId) {
           int score = 0;
-          if (scoreHome > scoreAway && betHome > betAway) { //home wins
-            score = 2;
-            if (scoreHome == betHome && betAway == scoreAway)
-              score += 3;
-            else if (scoreHome == betHome && betAway != scoreAway) score += 1;
-          } else if (scoreHome < scoreAway && betHome < betAway) { //away wins
-            score = 2;
-            if (scoreHome == betHome && betAway == scoreAway)
-              score += 3;
-            else if (scoreAway == betAway && scoreHome != betHome) score += 1;
-          } else if (scoreHome == scoreAway && betHome == betAway) { //draw
-            score = (scoreHome == betHome && scoreAway == betAway) ? 5 : 2;
+          if (betHome == scoreHome) score++;
+          if (betAway == scoreAway) score++;
+
+          if (scoreHome > scoreAway) { //home wins
+            if (betHome > betAway) score += 2;
           }
+          else if (scoreHome < scoreAway) { //home loses
+            if (betHome < betAway) score += 2;
+          } else { //draw
+            if (betHome == betAway) score +=2;
+          }
+
+          if (score == 4) score++; 
           usersFinalScore[userId] = usersFinalScore[userId] == null
               ? score
               : usersFinalScore[userId] + score;
